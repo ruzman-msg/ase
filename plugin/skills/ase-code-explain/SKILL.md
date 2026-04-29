@@ -39,12 +39,12 @@ code and *explain* it in *brief*, *standardized*, and *concise* way.
     Output the result with the following <template/>:
 
     <template>
-    &#x26AA; **WHAT** (You should know what):
+    &#x1F535; **WHAT** (You should know what):
     - [...]
     - [...]
     - [...]
-
-    &#x26AA; **WHY** (You should know why):
+    
+    &#x1F535; **WHY** (You should know why):
     - [...]
     - [...]
     - [...]
@@ -93,12 +93,12 @@ code and *explain* it in *brief*, *standardized*, and *concise* way.
     Output the result with the following <template/>:
 
     <template>
-    &#x26AA; **CRUXES** (You should notice):
+    &#x1F7E0; **CRUXES** (You should notice):
     - [...]
     - [...]
     - [...]
 
-    &#x26AA; **GOTCHAS** (You should not stumble over):
+    &#x1F7E0; **GOTCHAS** (You should not stumble over):
     - [...]
     - [...]
     - [...]
