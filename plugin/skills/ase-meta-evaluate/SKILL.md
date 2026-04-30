@@ -103,14 +103,18 @@ multi-*criteria* decision matrix.
     </step>
 
 4.  <step id="STEP 4: Report Best Alternative">
-    -   The best alternative <alternative-K/> (K=1-N) is the one with the
-        corresponding, maximum, rating value <rating-K/> (K=1-N).
+    -   The best alternative(s) <alternative-K/> (K=1-N) are *all* those
+        alternatives whose <rating-K/> equals the maximum rating value
+        across all alternatives. In the typical case, this is exactly one
+        alternative. In case of a tie, it is two or more alternatives.
 
-    -   Report this single, best alternative <alternative-K/> (K=1-N)
-        with the following <template/> and do not output anything else:
+    -   Report each best alternative <alternative-K/> with the following
+        <template/> and do not output anything else:
 
         <template>
-        &#x1F535; **BEST ALTERNATIVE**: ⚑ **<alternative-K/>**
+        &#x1F535; **BEST ALTERNATIVE(S)**:
+        ⚑ **<alternative-K/>**
+        [...]
         </template>
     </step>
 </flow>
