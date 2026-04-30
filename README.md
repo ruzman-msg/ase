@@ -39,7 +39,7 @@ especially in the discipline *Software Development*.
 Features
 --------
 
-**ASE** provides the following four distinct features:
+**ASE** provides the following five distinct features:
 
 - [**Configuration Scopes**](docs/configuration.md) (100% done):
   Parameters of project and agent can be configured on the hierarchy of
