@@ -65,9 +65,9 @@ multi-*criteria* decision matrix.
         not stumble over) is its single most distinguishing
         perspective, and remember this as an <info-K/> (K=1-N)
         formatted like `<type/>: <hint/>` where <type/> is one of
-        `USP`, `Crux`, or `Gotcha` and <hint/> is a 1-4 word hint.
+        `USP`, `Crux`, or `Gotcha` and <hint/> is a 1-6 word hint.
 
-    -   For the set of alternatives, decide what the 1-4 word long
+    -   For the set of alternatives, decide what the 1-6 word long
         name of the *class of alternatives* <class-of-alternatives/> is.
 
     -   For each alternative <alternative-K/> (K=1-N), decide whether
@@ -185,11 +185,13 @@ multi-*criteria* decision matrix.
     -   Determine rating distance <distance/> between <alternative-K/>
         and <alternative-X/> from their *raw, unrounded* ratings by
         calculating: <distance/> = <rating-K/> - <rating-X/>.
+        Do not output anything.
 
     -   Determine rating distance percentage <percentage/> between
         <alternative-K/> and <alternative-X/> from their *raw,
         unrounded* ratings by calculating:
         <percentage/> = <distance/> / abs(<rating-K/>).
+        Do not output anything.
 
         If <rating-K/> is exactly zero, skip the division entirely
         and treat <percentage/> as if it were less than 0.10
