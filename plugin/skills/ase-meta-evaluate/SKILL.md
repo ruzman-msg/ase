@@ -34,12 +34,13 @@ multi-*criteria* decision matrix.
         use the `WebSearch` tool to find out more and adjust the name
         <alternative-K/>. Do not output anything.
 
-    -   For each alternative <alternative-K/> (K=1-N), decide what it is
-        *Unique Selling Point (USP)* (What makes it unique), *Crux*
-        (What you should notice), or *Gotcha* (What you should not
-        stumble over) and remember this as an <info-K/> (K=1-N) which is
-        formatted like `<type/>: <hint/>` where <type/> is one of `USP`,
-        `Crux` or `Gotcha` and <hint/> is a 1-4 word hint.
+    -   For each alternative <alternative-K/> (K=1-N), decide which
+        *one* of *USP* (Unique Selling Point -- what makes it unique),
+        *Crux* (what you should notice), or *Gotcha* (what you should
+        not stumble over) is its single most distinguishing
+        perspective, and remember this as an <info-K/> (K=1-N)
+        formatted like `<type/>: <hint/>` where <type/> is one of
+        `USP`, `Crux`, or `Gotcha` and <hint/> is a 1-4 word hint.
 
     -   For the set of alternatives, decide what the 1-4 word long
         name of the *class of alternatives* <class-of-alternatives/> is.
