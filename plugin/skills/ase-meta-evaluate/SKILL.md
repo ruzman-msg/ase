@@ -149,20 +149,26 @@ multi-*criteria* decision matrix.
     </step>
 
 5.  <step id="STEP 5: Report Best Alternative">
-    -   The best alternative(s) <alternative-K/> (K=1-N) are *all* those
-        alternatives whose <rating-K/> (rounded to 2 decimal places per
-        STEP 3) equals the maximum rounded rating value across all
-        alternatives. In the typical case, this is exactly one
-        alternative. In case of a tie, it is two or more alternatives.
+    -   The best alternative <alternative-K/> (K=1-N) is the
+        alternative whose <rating-K/> (rounded to 2 decimal places per
+        STEP 4) is the maximum rounded rating value across all
+        alternatives.
 
-    -   Report each best alternative <alternative-K/> with the following
+    -   If multiple alternatives have the same maximum, rounded rating (a tie
+        situation), tell the problem with just the following <template/> and
+        do no output anything else:
+
+        <template>
+        &#x1F7E0; **ERROR**: ✘ *MULTIPLE BEST ALTERNATIVES FOUND*,
+        Please give hints on the criterias to ensure a clear best alternative!
+        </template>
+
+    -   If a single alternative <alternative-K/> (K=1-N) has the maximum,
+        rounded rating, output this result with just the following
         <template/> and do not output anything else:
 
         <template>
-        &#x1F7E0; **BEST ALTERNATIVE(S)**:
-
-        ⚑ **<alternative-K/>**
-        [...]
+        &#x1F7E0; **BEST ALTERNATIVE**: ⚑ **<alternative-K/>**
         </template>
     </step>
 </flow>
