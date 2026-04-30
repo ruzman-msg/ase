@@ -62,18 +62,19 @@ multi-*criteria* decision matrix.
         criterias <criteria-L/> (L=1-M) the user requested. Do not output
         anything.
 
+    -   For each criteria <criteria-L/> (L=1-M), decide on its <weight-L/>
+        from the value set { 4.00, 2.00, 1.00, 0.50, 0.25 } (from most important,
+        over normal, to less important). Do not output anything.
+
     -   Ensure the final number of criterias is always within the range
         of minimum 8 and maximum 12: if less than 8 criterias were
         requested, use the set of alternatives to decide on additional
         criterias which potentially allow best to triage the
         alternatives, and use the `WebSearch` tool to find out about the
-        potentially still missing criterias; if more than 12 criterias
-        were requested, drop the least-discriminating ones until 12
-        remain. Do not output anything.
-
-    -   For each criteria <criteria-L/> (L=1-M), decide on its <weight-L/>
-        from the value set { 4.00, 2.00, 1.00, 0.50, 0.25 } (from most important,
-        over normal, to less important). Do not output anything.
+        potentially still missing criterias and assign their <weight-L/>;
+        if more than 12 criterias were requested, drop the criterias
+        with the smallest <weight-L/> until 12 remain. Do not output
+        anything.
     </step>
 
 3.  <step id="STEP 3: Evaluate Alternatives against Criterias">
