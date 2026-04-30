@@ -77,7 +77,7 @@ multi-*criteria* decision matrix.
         else:
 
         <template>
-        &#x26AA; **ALTERNATIVES**: *<class-of-alternatives/>*
+        &#x1F535; **ALTERNATIVES**: *<class-of-alternatives/>*
 
         | ⚑ *Alternative*        | ⚖ *Hint*  |
         | :--------------------- | :-------- |
@@ -137,7 +137,7 @@ multi-*criteria* decision matrix.
         with just the following <template/> and do no output anything else:
 
         <template>
-        &#x1F7E0; **EVALUATION**: *Weighted Multi-Criteria Decision Matrix*
+        &#x1F535; **EVALUATION**: *Weighted Multi-Criteria Decision Matrix*
 
         | ⦿ *Criteria*  | ⚖ *Weight*  | ⚑ **<alternative-1/>** | [...alternatives 2-(N-1)...] | ⚑ **<alternative-N/>** |
         | :------------ | ----------: | ---------------------: | ---------------------------: | ---------------------: |
@@ -159,7 +159,7 @@ multi-*criteria* decision matrix.
         <template/> and do not output anything else:
 
         <template>
-        &#x1F535; **BEST ALTERNATIVE(S)**:
+        &#x1F7E0; **BEST ALTERNATIVE(S)**:
 
         ⚑ **<alternative-K/>**
         [...]
