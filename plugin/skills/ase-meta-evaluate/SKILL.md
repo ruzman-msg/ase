@@ -2,8 +2,10 @@
 name: ase-meta-evaluate
 argument-hint: "<request>"
 description: >
-    Evaluate alternatives through a weighted multi-criteria decision matrix.
-    Use when the user calls for the *evaluation of alternatives*.
+    Evaluate alternatives through a weighted multi-criteria decision
+    matrix. Use when the user calls for the *evaluation* of
+    *alternatives*, wants to *compare* things, or asks what the best is
+    from a list of choices.
 user-invocable: true
 disable-model-invocation: false
 effort: high
