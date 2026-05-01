@@ -13,8 +13,8 @@ import type Log                          from "./ase-log.js"
 
 /*  internal command options type  */
 interface DiagramOpts {
-    ascii?:         boolean
-    colorMode?:     string
+    ascii:          boolean
+    colorMode:      "none" | "ansi16" | "ansi256",
     input?:         string
     nodeMarginX:    number
     nodeMarginY:    number
@@ -31,6 +31,13 @@ const parseInteger = (name: string) => (value: string): number => {
     if (!Number.isFinite(n) || n < 0)
         throw new InvalidArgumentError(`${name} must be a non-negative integer`)
     return n
+}
+
+/*  custom argument parser for Commander: color mode  */
+const parseColorMode = (name: string) => (value: string): "none" | "ansi16" | "ansi256" => {
+    if (value !== "none" && value !== "ansi16" && value !== "ansi256")
+        throw new InvalidArgumentError(`${name} must be "none", "ansi16", or "ansi256"`)
+    return value
 }
 
 /*  detect terminal column width  */
@@ -160,7 +167,8 @@ export default class DiagramCommand {
                 "emit plain ASCII (+-|) instead of Unicode box-drawing",
                 false)
             .option("-c, --color-mode <mode>",
-                "force color mode (\"none\", \"ansi16\", or \"ansi256\")")
+                "force color mode (\"none\", \"ansi16\", or \"ansi256\")",
+                parseColorMode("--color-mode"), detectColorMode())
             .option("--node-margin-x <n>",
                 "horizontal margin between nodes of <n> characters",
                 parseInteger("--node-margin-x"), 3)
@@ -194,17 +202,6 @@ export default class DiagramCommand {
                     process.exit(1)
                 }
 
-                /*  determine color mode  */
-                let colorMode: "none" | "ansi16" | "ansi256"
-                if (opts.colorMode === "none" || opts.colorMode === "ansi16" || opts.colorMode === "ansi256")
-                    colorMode = opts.colorMode
-                else if (opts.colorMode === undefined)
-                    colorMode = detectColorMode()
-                else {
-                    this.log.write("error", "diagram: --color-mode must be \"none\", \"ansi16\", or \"ansi256\"")
-                    process.exit(1)
-                }
-
                 /*  create diagram rendering  */
                 let out: string
                 try {
@@ -213,8 +210,8 @@ export default class DiagramCommand {
                         paddingX:         opts.nodeMarginX,
                         paddingY:         opts.nodeMarginY,
                         boxBorderPadding: opts.nodePadding,
-                        colorMode,
-                        theme: colorMode !== "none" ? {
+                        colorMode:        opts.colorMode,
+                        theme: opts.colorMode !== "none" ? {
                             fg:       "#000000",
                             border:   "#a0a0a0",
                             junction: "#a0a0a0",
