@@ -10,38 +10,26 @@ User Setup
 ```
 #   install ASE tool
 npm install -g @rse/ase
-```
 
-```
 #   install ASE plugin
-claude plugin marketplace add rse/ase
-claude plugin install ase@ase
+ase setup install
 ```
 
 ### Update
 
 ```
-#   update ASE tool
-npm update -g @rse/ase
-```
-
-```
-#   update ASE plugin
-claude plugin marketplace update ase
-claude plugin update ase@ase
+#   update ASE tool and ASE plugin
+ase setup update
 ```
 
 ### Uninstallation
 
 ```
+#   uninstall ASE plugin
+ase setup uninstall
+
 #   uninstall ASE tool
 npm uninstall -g @rse/ase
-```
-
-```
-#   uninstall ASE plugin
-claude plugin uninstall ase@ase
-claude plugin marketplace remove ase
 ```
 
 Contributor Setup
@@ -63,8 +51,7 @@ mkdir -p $HOME/bin
 chmod 755 $HOME/bin/ase
 
 #   install plugin
-claude plugin marketplace add `pwd`
-claude plugin install ase@ase
+ase setup install --dev
 ```
 
 ### Upgrade Setup (after foreign changes)
@@ -79,8 +66,7 @@ git stash pop
 (cd tool && npm install && npm start build)
 
 #   re-install plugin
-claude plugin uninstall ase@ase
-claude plugin install ase@ase
+ase setup update --dev
 ```
 
 ### Update Setup (after own local changes)
@@ -90,7 +76,6 @@ claude plugin install ase@ase
 (cd tool && npm install && npm start build)
 
 #   re-install plugin
-claude plugin uninstall ase@ase
-claude plugin install ase@ase
+ase setup update --dev
 ```
 

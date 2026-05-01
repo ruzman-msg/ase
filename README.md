@@ -70,14 +70,11 @@ Installation
 ------------
 
 ```
-#   install ASE tool
+#   install ASE tool into system via NPM
 npm install -g @rse/ase
-```
 
-```
-#   install ASE plugin
-claude plugin marketplace add rse/ase
-claude plugin install ase@ase
+#   install ASE plugin into Claude Code via ASE
+ase setup install
 ```
 
 Documenation

@@ -13,6 +13,7 @@ import ServiceCommand              from "./ase-service.js"
 import MCPCommand                  from "./ase-mcp.js"
 import HookCommand                 from "./ase-hook.js"
 import DiagramCommand              from "./ase-diagram.js"
+import SetupCommand                from "./ase-setup.js"
 import pkg                         from "../package.json" with { type: "json" }
 
 /*  type of top-level (global) options  */
@@ -38,7 +39,7 @@ const main = async (): Promise<void> => {
         .usage("<command> [options]")
         .version(`ASE ${pkg.version}`, "-V, --version", "show version information")
         .addOption(new Option("-l, --log-level <level>", "log level")
-            .choices([ "error", "warning", "info", "debug" ]).default("warning"))
+            .choices([ "error", "warning", "info", "debug" ]).default("info"))
         .option("-L, --log-file  <file>",  "log file path, or \"-\" for stdout", "-")
         .showHelpAfterError()
         .enablePositionalOptions()
@@ -58,6 +59,7 @@ const main = async (): Promise<void> => {
     new MCPCommand(log).register(program)
     new HookCommand(log).register(program)
     new DiagramCommand(log).register(program)
+    new SetupCommand(log).register(program)
 
     /*  parse program arguments  */
     await program.parseAsync(process.argv)
