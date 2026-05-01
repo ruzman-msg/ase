@@ -5,6 +5,11 @@ ChangeLog
 0.0.14 (2026-05-01)
 -------------------
 
+- FEATURE: add `ase diagram` CLI subcommand that renders Mermaid source to ASCII/Unicode
+- FEATURE: add `ase-diagram` skill with diagram rendering rules
+- IMPROVEMENT: route all meta and consumer skills through `ase-diagram` skill
+- UPDATE: upgrade dependencies
+
 0.0.13 (2026-04-30)
 -------------------
 
