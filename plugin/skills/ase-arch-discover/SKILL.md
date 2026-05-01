@@ -8,8 +8,8 @@ user-invocable: true
 disable-model-invocation: false
 effort: medium
 allowed-tools:
-    - "Bash(npm search *)"
-    - "Bash(npm view *)"
+    - "Bash(npm search --json *)"
+    - "Bash(npm view --json *)"
     - "Skill(ase-meta-search)"
     - "Agent(ase-meta-search)"
     - "WebFetch"
@@ -49,27 +49,27 @@ for the technology stack to *provide* the *needed functionality*
     -   Determine the used technology stack.
 
     -   If a file `package.json` is found in the top-level directory
-        of the project, then <stack>JavaScript</stack>.
-
-    -   If a file `package.json` is found in the top-level directory
         of the project and contains an entry `typescript` under `dependencies`
         or `devDependencies`, then <stack>TypeScript</stack>.
 
-    -   If a file `pom.xml` or `build.gradle` is found in the top-level directory
-        of the project, then <stack>Java</stack>.
+    -   Else, if a file `package.json` is found in the top-level directory
+        of the project, then <stack>JavaScript</stack>.
 
-    -   If a file `build.gradle.kts` or `settings.gradle.kts`
+    -   Else, if a file `build.gradle.kts` or `settings.gradle.kts`
         is found in the top-level directory, then <stack>Kotlin</stack>.
 
-    -   If a file `pom.xml` is found in the top-level directory and
-        contains `kotlin-maven-plugin` or `kotlin-stdlib` dependencies, then
-        <stack>Kotlin</stack>.
-
-    -   If a file `build.gradle` is found in the top-level directory and
+    -   Else, if a file `build.gradle` is found in the top-level directory and
         is applying `kotlin`, `org.jetbrains.kotlin.jvm`, `kotlin-android`,
         or `kotlin-multiplatform` plugins, then <stack>Kotlin</stack>.
 
-    -   If <stack/> could not be determined, then <stack>Unknown</stack>.
+    -   Else, if a file `pom.xml` is found in the top-level directory and
+        contains `kotlin-maven-plugin` or `kotlin-stdlib` dependencies, then
+        <stack>Kotlin</stack>.
+
+    -   Else, if a file `pom.xml` or `build.gradle` is found in the top-level directory
+        of the project, then <stack>Java</stack>.
+
+    -   Else, use <stack>Unknown</stack>.
 
     -   Display the determined final technology stack with just the
         following <template/>:
@@ -95,27 +95,29 @@ for the technology stack to *provide* the *needed functionality*
 
         -   Based on the essential keywords <keyword-L/> (L=1-M),
             use the `ase-meta-search` skill in a subagent to *generally*
-            discover *NPM packages* <component-K/> and at least
-            their real name <name/> and their unique package names
-            <package-K/>.
+            discover an initial set of a maximum of 8 *NPM packages*
+            <component-K/> and at least their real name <name/> and
+            their unique package names <package-K/>.
 
-        -   Use the shell command `npm search --searchlimit 20 --json
+        -   Use the shell command `npm search --json --searchlimit 8
             "<keyword-1/>" [...] "<keyword-M/>"` to *specifically*
-            discover *NPM packages* <component-K/> and at least their
-            unique package names <package-K/>, based on the essential
-            keywords <keyword-L/> (L=1-M). Merge the results into the
-            already existing result set, but deduplicate entries.
+            discover an additional set of a maximum of 8 *NPM packages*
+            <component-K/> and at least their unique package names
+            <package-K/>, based on the essential keywords <keyword-L/>
+            (L=1-M). Merge the results into the already existing result
+            set, but deduplicate entries.
 
-        -   For each discovered *NPM package* <component-K/> (K=1-N), use the shell command
-            `npm view --json "<package-K/>" version time.modified
-            time.created repository.url)` to discover its version
-            <version-K/>, its time modified <updated-K/>,
-            its time created <created-K>, and its repository
-            URL <repository-K/>.
+        -   For each discovered *NPM package* <component-K/> (K=1-N),
+            use the shell command `npm view --json "<package-K/>"
+            version time repository.url` to discover
+            its version <version-K/>, the publish time of that
+            version <updated-K/> (read from `time[<version-K/>]`),
+            its time created <created-K/> (read from `time.created`),
+            and its repository URL <repository-K/>.
 
-        -   If the <repository-K/> matches `[...]github.com/<org/>/<name/>[...]`
-            use the `WebFetch` tool to fetch the URL
-            `https://api.github.com/repos/<org/>/<name/>` and extract
+        -   If the <repository-K/> regexp-matches
+            `.+?//github\.com/([^/]+/[^/.]+).*` use the `WebFetch` tool to
+            fetch the URL `https://api.github.com/repos/$1` and extract
             <stars-K/> from its JSON `stargazers_count` field, else set
             <stars-K/> to `N.A.`.
 
@@ -127,8 +129,9 @@ for the technology stack to *provide* the *needed functionality*
 
 4.  <step id="STEP 4: Report Components">
     -   Sort, in descending order, the discovered components
-        <component-K/> (K=1-N) by their <downloads-K/>, then by their
-        <stars-K/>, then by their then <updated-K/> information.
+        <component-K/> (K=1-N) first by their <downloads-K/> and second
+        by their <stars-K/> and trim the result list to just a maximum
+        of 8 total components.
 
     -   Display the discovered components as a Markdown *table*
         with just the following <template/>:
@@ -137,7 +140,7 @@ for the technology stack to *provide* the *needed functionality*
         &#x1F535; **COMPONENTS**:
 
         | *Component*   | *Package*      | *Version*    | *Downloads*        | *Stars*        | *Updated*        | *Created*    |
-        | :------------ | :------------- | :------------| :----------------- | :------------- | :--------------- | :----------- |
+        | :------------ | :------------- | -----------: | -----------------: | -------------: | :--------------- | :----------- |
         | **<name-1/>** | `<package-1/>` | <version-1/> | **<downloads-1/>** | **<stars-1/>** | **<updated-1/>** | <created-1/> |
         [...]
         | **<name-N/>** | `<package-N/>` | <version-N/> | **<downloads-N/>** | **<stars-N/>** | **<updated-N/>** | <created-N/> |
