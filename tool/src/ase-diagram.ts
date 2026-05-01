@@ -5,7 +5,6 @@
 */
 
 import fs                                from "node:fs"
-import tty                               from "node:tty"
 
 import { Command, InvalidArgumentError } from "commander"
 import { renderMermaidASCII }            from "beautiful-mermaid"
@@ -14,14 +13,16 @@ import type Log                          from "./ase-log.js"
 
 /*  internal command options type  */
 interface DiagramOpts {
-    ascii?:       boolean
-    colorMode?:   string
-    input?:       string
-    padX:         number
-    padY:         number
-    padBox:       number
-    marginLeft:   number
-    marginRight:  number
+    ascii?:         boolean
+    colorMode?:     string
+    input?:         string
+    nodeMarginX:    number
+    nodeMarginY:    number
+    nodePadding:    number
+    diagramClipX:   number
+    diagramClipY:   number
+    terminalWidth:  number
+    terminalHeight: number
 }
 
 /*  custom argument parser for Commander: non-negative integer  */
@@ -50,75 +51,46 @@ const detectTermWidth = (): number => {
             width = cols
     }
 
-    /*  attempt 3: query stderr  */
-    if (width === 0 && process.stderr.isTTY) {
-        const cols = process.stderr.columns
-        if (typeof cols === "number" && cols > 0)
-            width = cols
+    return width
+}
+
+/*  detect terminal row height  */
+const detectTermHeight = (): number => {
+    let height = 0
+
+    /*  attempt 1: query environment variable  */
+    if (process.env.ASE_TERM_HEIGHT !== undefined) {
+        const rows = Number.parseInt(process.env.ASE_TERM_HEIGHT, 10)
+        if (Number.isFinite(rows) && rows > 0)
+            height = rows
     }
 
-    /*  attempt 4: query /dev/tty  */
-    if (width === 0) {
-        let fd = -1
-        try {
-            fd = fs.openSync("/dev/tty", "r+")
-            const stream = new tty.WriteStream(fd)
-            const cols   = stream.columns
-            stream.destroy()
-            if (typeof cols === "number" && cols > 0)
-                width = cols
-        }
-        catch {
-            if (fd >= 0) {
-                try { fs.closeSync(fd) }
-                catch { /*  ignore  */ }
-            }
-        }
+    /*  attempt 2: query stdout  */
+    if (height === 0 && process.stdout.isTTY) {
+        const rows = process.stdout.rows
+        if (typeof rows === "number" && rows > 0)
+            height = rows
     }
-    return width
+
+    return height
 }
 
 /*  detect terminal color capability  */
 const detectColorMode = (): "none" | "ansi16" | "ansi256" => {
     let mode: "none" | "ansi16" | "ansi256" = "none"
 
-    /*  attempt 1: query environment variable  */
+    /*  attempt 1: query environment variable (explicitly)  */
     if (process.env.ASE_TERM_COLORS !== undefined)
         if (process.env.ASE_TERM_COLORS.match(/^(?:none|ansi16|ansi256)$/) !== null)
             mode = process.env.ASE_TERM_COLORS as "none" | "ansi16" | "ansi256"
 
-    /*  helper function for querying a writable stream  */
-    const getColorDepth = (stream: tty.WriteStream): "none" | "ansi16" | "ansi256" => {
-        const depth = stream.getColorDepth()
-        if      (depth >= 8) return "ansi256"
-        else if (depth >= 4) return "ansi16"
-        else                 return "none"
-    }
-
     /*  attempt 2: query stdout  */
-    if (mode === "none" && process.stdout.isTTY)
-        mode = getColorDepth(process.stdout)
-
-    /*  attempt 3: query stderr  */
-    if (mode === "none" && process.stderr.isTTY)
-        mode = getColorDepth(process.stderr)
-
-    /*  attempt 4: query /dev/tty  */
-    if (mode === "none") {
-        let fd = -1
-        try {
-            fd = fs.openSync("/dev/tty", "r+")
-            const stream = new tty.WriteStream(fd)
-            mode = getColorDepth(stream)
-            stream.destroy()
-        }
-        catch {
-            if (fd >= 0) {
-                try { fs.closeSync(fd) }
-                catch { /*  ignore  */ }
-            }
-        }
+    if (mode === "none" && process.stdout.isTTY) {
+        const depth = process.stdout.getColorDepth()
+        if      (depth >= 8) mode = "ansi256"
+        else if (depth >= 4) mode = "ansi16"
     }
+
     return mode
 }
 
@@ -189,21 +161,27 @@ export default class DiagramCommand {
                 false)
             .option("-c, --color-mode <mode>",
                 "force color mode (\"none\", \"ansi16\", or \"ansi256\")")
-            .option("-x, --pad-x <n>",
-                "horizontal spacing between nodes",
-                parseInteger("--pad-x"), 3)
-            .option("-y, --pad-y <n>",
-                "vertical spacing between nodes",
-                parseInteger("--pad-y"), 3)
-            .option("-b, --pad-box <n>",
-                "inner node box spacing",
-                parseInteger("--pad-box"), 1)
-            .option("-l, --margin-left <n>",
-                "left margin (columns reserved on the left)",
-                parseInteger("--margin-left"), 0)
-            .option("-r, --margin-right <n>",
-                "right margin (columns reserved on the right)",
-                parseInteger("--margin-right"), 0)
+            .option("--node-margin-x <n>",
+                "horizontal margin between nodes of <n> characters",
+                parseInteger("--node-margin-x"), 3)
+            .option("--node-margin-y <n>",
+                "vertical margin between nodes of <n> lines",
+                parseInteger("--node-margin-y"), 3)
+            .option("--node-padding <n>",
+                "horizontal and vertical inner node padding with <n> characters",
+                parseInteger("--node-padding"), 1)
+            .option("--diagram-clip-x <n>",
+                "extra horizontal clipping of diagram to terminal width minus <n> characters",
+                parseInteger("--diagram-clip-x"), 0)
+            .option("--diagram-clip-y <n>",
+                "extra vertical clipping of diagram to terminal height minus <n> lines",
+                parseInteger("--diagram-clip-y"), 0)
+            .option("--terminal-width <n>",
+                "width of terminal of <n> characters (for diagram clipping)",
+                parseInteger("--terminal-width"), detectTermWidth())
+            .option("--terminal-height <n>",
+                "height of terminal of <n> lines (for diagram clipping)",
+                parseInteger("--terminal-height"), detectTermHeight())
             .action(async (opts: DiagramOpts) => {
                 /*  fetch Mermaid diagram specification from stdin  */
                 let src: string
@@ -232,9 +210,9 @@ export default class DiagramCommand {
                 try {
                     out = renderMermaidASCII(src, {
                         useAscii:         opts.ascii ?? false,
-                        paddingX:         opts.padX,
-                        paddingY:         opts.padY,
-                        boxBorderPadding: opts.padBox,
+                        paddingX:         opts.nodeMarginX,
+                        paddingY:         opts.nodeMarginY,
+                        boxBorderPadding: opts.nodePadding,
                         colorMode,
                         theme: colorMode !== "none" ? {
                             fg:       "#000000",
@@ -260,16 +238,18 @@ export default class DiagramCommand {
                 }
 
                 /*  optionally clip diagram rendering  */
-                const termWidth = detectTermWidth()
-                process.stderr.write(`w=<${termWidth}>\n`)
-                if (termWidth > 0) {
-                    const budget = termWidth - opts.marginLeft - opts.marginRight
-                    if (budget > 0) {
-                        const trailingNL = out.endsWith("\n")
-                        const lines = (trailingNL ? out.slice(0, -1) : out).split("\n")
-                        const clipped = lines.map((l) => truncateAnsiLine(l, budget))
-                        out = clipped.join("\n") + (trailingNL ? "\n" : "")
-                    }
+                const termWidth  = opts.terminalWidth
+                const termHeight = opts.terminalHeight
+                if (termWidth > 0 || termHeight > 0) {
+                    const maxWidth   = termWidth  > 0 ? termWidth  - opts.diagramClipX : 0
+                    const maxHeight  = termHeight > 0 ? termHeight - opts.diagramClipY : 0
+                    const trailingNL = out.endsWith("\n")
+                    let lines = (trailingNL ? out.slice(0, -1) : out).split("\n")
+                    if (maxWidth > 0)
+                        lines = lines.map((l) => truncateAnsiLine(l, maxWidth))
+                    if (maxHeight > 0 && lines.length > maxHeight)
+                        lines = lines.slice(0, maxHeight)
+                    out = lines.join("\n") + (trailingNL ? "\n" : "")
                 }
 
                 /*  output diagram rendering  */
