@@ -24,7 +24,7 @@ Skill Output
 -   *IMPORTANT*: For *Diagrams*: whenever the response needs a
     diagram (structural, control-flow, state, sequence, class,
     entity-relationship, or metrics), you *MUST* invoke the
-    `ase-diagram` skill via the `Skill` tool and follow its rules.
+    `ase-meta-diagram` skill via the `Skill` tool and follow its rules.
     All hand-drawn ASCII frames, raw Mermaid source as a
     substitute for a rendered block, and missing stdout
     reproduction are defects defined by that skill.

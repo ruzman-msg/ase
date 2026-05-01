@@ -51,7 +51,7 @@ specialized in *debugging and fixing source code*.
      transitions, etc), complex *data flow* (actors, messages, etc), or
      complex *data structure* (classes, entities, relationships, etc),
      visualize it with an optional diagram <optional-diagram/> by
-     invoking the `ase-diagram` skill via the `Skill` tool. Omit
+     invoking the `ase-meta-diagram` skill via the `Skill` tool. Omit
      <optional-diagram/> entirely for simple or purely local situation.
    </step>
 
@@ -88,9 +88,9 @@ specialized in *debugging and fixing source code*.
 
    - In case of a *complex solution situation* only, visualize it with
      an optional diagram <optional-diagram/> by invoking the
-     `ase-diagram` skill via the `Skill` tool. For *current vs.
+     `ase-meta-diagram` skill via the `Skill` tool. For *current vs.
      proposed* comparisons, render each side as a *separate*
-     `ase-diagram` invocation and stack the rendered blocks
+     `ase-meta-diagram` invocation and stack the rendered blocks
      *vertically* (labels `**Before:**` / `**After:**`); never
      side-by-side. Omit <optional-diagram/> entirely for simple or
      purely local situation.

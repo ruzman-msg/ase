@@ -1,8 +1,8 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(ase diagram:*)",
-      "Skill(ase:ase-diagram)"
-    ]
-  }
+    "permissions": {
+        "allow": [
+            "Bash(ase diagram:*)",
+            "Skill(ase:ase-meta-diagram)"
+        ]
+    }
 }

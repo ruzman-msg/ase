@@ -1,5 +1,5 @@
 ---
-name: ase-diagram
+name: ase-meta-diagram
 description: >
     Render diagrams via the `ase diagram` CLI. Use whenever a
     response needs a structural, control-flow, state, sequence, class,
@@ -25,7 +25,7 @@ response text, derived from Mermaid source piped through `ase diagram`
 via the `Bash` tool.
 </objective>
 
-*Note on naming*: `ase-diagram` (hyphen) is *this skill*; `ase diagram`
+*Note on naming*: `ase-meta-diagram` (hyphen) is *this skill*; `ase diagram`
 (space) is the *CLI subcommand* this skill uses under the hood. The
 skill is invoked via the `Skill` tool; the CLI is invoked via the
 `Bash` tool inside the same response turn.

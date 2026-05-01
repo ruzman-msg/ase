@@ -85,7 +85,7 @@ Give *insights* into the project through the source code of $ARGUMENTS.
 
     Find all modules (or OOP classes) and draw a `flowchart TB`
     diagram with all modules as boxes and the imports between modules
-    as the directed edges. Invoke the `ase-diagram` skill via the
+    as the directed edges. Invoke the `ase-meta-diagram` skill via the
     `Skill` tool to render the diagram. Do not display any further
     explanation except for this diagram.
     </step>

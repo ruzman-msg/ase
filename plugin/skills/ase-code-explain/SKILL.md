@@ -66,7 +66,7 @@ code and *explain* it in *brief*, *standardized*, and *concise* way.
     Choose the Mermaid diagram type per intent: `classDiagram` for
     class/method structure, `sequenceDiagram` for actor/message flow,
     or `flowchart TB` for boxes-and-lines component layouts.
-    Invoke the `ase-diagram` skill via the `Skill` tool to render the
+    Invoke the `ase-meta-diagram` skill via the `Skill` tool to render the
     diagram. Do *not* hand-draw.
 
     Keep your explanation *brief* and *concise*.
