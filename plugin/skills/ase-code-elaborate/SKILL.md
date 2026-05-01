@@ -6,6 +6,8 @@ description: >
 user-invocable: true
 disable-model-invocation: false
 effort: high
+allowed-tools:
+    - "Skill(ase:ase-meta-diagram)"
 ---
 
 @${CLAUDE_SKILL_DIR}/../../meta/ase-skill.md

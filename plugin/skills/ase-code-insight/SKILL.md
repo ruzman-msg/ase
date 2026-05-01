@@ -10,6 +10,7 @@ allowed-tools:
     - "Bash(sort)"
     - "Bash(uniq)"
     - "Bash(head)"
+    - "Skill(ase:ase-meta-diagram)"
 ---
 
 @${CLAUDE_SKILL_DIR}/../../meta/ase-skill.md
