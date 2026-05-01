@@ -79,6 +79,42 @@ export default class HookCommand {
         return 0
     }
 
+    /*  handler for "ase hook pre-tool-use"  */
+    private doPreToolUse (): number {
+        /*  read tool invocation information  */
+        const stdin = fs.readFileSync(0, "utf8")
+        const input = stdin.trim() !== "" ? JSON.parse(stdin) as {
+            tool_name?:  string,
+            tool_input?: { command?: string, skill?: string }
+        } : {}
+
+        /*  determine whether to auto-approve the tool invocation  */
+        const toolName    = input.tool_name  ?? ""
+        const toolInput   = input.tool_input ?? {}
+        let   approve     = false
+        let   reason      = ""
+        if (toolName === "Bash" && /^ase(\s|$)/.test(toolInput.command ?? "")) {
+            approve = true
+            reason  = "ASE CLI invocation auto-approved"
+        }
+        else if (toolName === "Skill" && /^(?:ase:)?ase-.+/.test(toolInput.skill ?? "")) {
+            approve = true
+            reason  = "ASE skill invocation auto-approved"
+        }
+
+        /*  emit permission decision (or stay silent to defer to default flow)  */
+        if (approve) {
+            process.stdout.write(JSON.stringify({
+                "hookSpecificOutput": {
+                    "hookEventName":           "PreToolUse",
+                    "permissionDecision":      "allow",
+                    "permissionDecisionReason": reason
+                }
+            }))
+        }
+        return 0
+    }
+
     /*  register commands  */
     register (program: Command): void {
         /*  register CLI top-level command "ase hook"  */
@@ -96,6 +132,14 @@ export default class HookCommand {
             .description("handle Claude Code SessionStart hook event")
             .action(() => {
                 process.exit(this.doSessionStart())
+            })
+
+        /*  register CLI sub-command "ase hook pre-tool-use"  */
+        hookCmd
+            .command("pre-tool-use")
+            .description("handle Claude Code PreToolUse hook event")
+            .action(() => {
+                process.exit(this.doPreToolUse())
             })
     }
 }

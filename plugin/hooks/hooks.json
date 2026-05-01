@@ -10,6 +10,17 @@
                     }
                 ]
             }
+        ],
+        "PreToolUse": [
+            {
+                "matcher": "Bash|Skill",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "ase hook pre-tool-use"
+                    }
+                ]
+            }
         ]
     }
 }
