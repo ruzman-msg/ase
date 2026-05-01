@@ -101,6 +101,10 @@ export default class HookCommand {
             approve = true
             reason  = "ASE skill invocation auto-approved"
         }
+        else if (/^mcp__plugin_ase_ase__.+/.test(toolName)) {
+            approve = true
+            reason  = "ASE MCP tool invocation auto-approved"
+        }
 
         /*  emit permission decision (or stay silent to defer to default flow)  */
         if (approve) {
