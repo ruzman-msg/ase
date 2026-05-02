@@ -5,6 +5,11 @@ Setup
 User Setup
 ----------
 
+### Prerequisites
+
+- [Claude Code](https://code.claude.com)
+- [Node.js](https://nodejs.org)
+
 ### Installation
 
 ```
@@ -31,6 +36,12 @@ ase setup uninstall
 
 Contributor Setup
 -----------------
+
+### Prerequisites
+
+- [Claude Code](https://code.claude.com)
+- [Node.js](https://nodejs.org)
+- [Git](https://git-scm.com)
 
 ### Initial Setup
 

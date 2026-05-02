@@ -69,6 +69,11 @@ Features
 User Setup
 ----------
 
+### Prerequisites
+
+- [Claude Code](https://code.claude.com)
+- [Node.js](https://nodejs.org)
+
 ### Installation
 
 ```
