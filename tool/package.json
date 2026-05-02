@@ -32,7 +32,8 @@
         "shx":                              "0.4.0",
 
         "@types/node":                      "25.6.0",
-        "@types/luxon":                     "3.7.1"
+        "@types/luxon":                     "3.7.1",
+        "@types/which":                     "3.0.4"
     },
     "dependencies": {
         "commander":                        "14.0.3",
@@ -48,7 +49,8 @@
         "pretty-ms":                        "9.3.0",
         "luxon":                            "3.7.2",
         "@modelcontextprotocol/sdk":        "1.29.0",
-        "zod":                              "4.4.2"
+        "zod":                              "4.4.2",
+        "which":                            "6.0.1"
     },
     "engines": {
         "npm":                              ">=10.0.0",

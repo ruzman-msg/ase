@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url"
 
 import { Command }       from "commander"
 import { execa }         from "execa"
+import which             from "which"
 
 import type Log          from "./ase-log.js"
 import pkg               from "../package.json" with { type: "json" }
@@ -16,6 +17,13 @@ import pkg               from "../package.json" with { type: "json" }
 /*  CLI command "ase setup"  */
 export default class SetupCommand {
     constructor (private log: Log) {}
+
+    /*  ensure a tool is available  */
+    private async ensureTool (tool: string) {
+        return which(tool).catch(() => {
+            throw new Error(`mandatory tool "${tool}" not found in $PATH`)
+        })
+    }
 
     /*  run a sub-process with inherited stdio so users see live output  */
     private async run (cmd: string, args: string[], cwd?: string): Promise<void> {
@@ -34,6 +42,9 @@ export default class SetupCommand {
 
     /*  handler for "ase setup install"  */
     private async doInstall (dev: boolean): Promise<number> {
+        await this.ensureTool("npm")
+        await this.ensureTool("claude")
+
         this.log.write("info", `setup: install${dev ? "[dev]" : ""}: ` +
             `installing ASE Claude Code plugin (origin: ${dev ? "local" : "remote"})`)
         const source = dev ? process.cwd() : "rse/ase"
@@ -44,6 +55,9 @@ export default class SetupCommand {
 
     /*  handler for "ase setup update"  */
     private async doUpdate (force: boolean, dev: boolean): Promise<number> {
+        await this.ensureTool("npm")
+        await this.ensureTool("claude")
+
         if (dev) {
             /*  update ASE CLI Tool  */
             this.log.write("info", "setup: update[dev]: re-build ASE CLI tool (origin: local)")
@@ -88,6 +102,9 @@ export default class SetupCommand {
 
     /*  handler for "ase setup uninstall"  */
     private async doUninstall (dev: boolean): Promise<number> {
+        await this.ensureTool("npm")
+        await this.ensureTool("claude")
+
         /*  uninstall ASE Claude Code plugin  */
         this.log.write("info", `setup: uninstall${dev ? "[dev]" : ""}: ` +
             `uninstalling ASE Claude Code plugin (origin: ${dev ? "local" : "remote"})`)
