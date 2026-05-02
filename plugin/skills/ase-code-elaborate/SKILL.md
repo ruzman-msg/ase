@@ -154,7 +154,7 @@ specialized in *debugging and fixing source code*.
      should be further revised in a loop.
    - When the plan was approved, switch to *Accept Edits* mode and
      apply the plan.
-   - After applying the plan, just stop. Do not run build procedure 
+   - After applying the plan, just stop. Do not run build procedure
      or tests automatically.
    </step>
 </flow>

@@ -45,7 +45,7 @@ code and *explain* it in *brief*, *standardized*, and *concise* way.
     - [...]
     - [...]
     - [...]
-    
+
     &#x1F535; **WHY** (You should know why):
     - [...]
     - [...]

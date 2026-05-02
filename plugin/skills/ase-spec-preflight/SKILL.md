@@ -31,7 +31,7 @@ draft for a corresponding, *complete source code change set*.
    - Derive the specification file
      <feature-filename/> from `<feature-id/>.md`.
 
-   - If the <feature-filename/> DOES STILL NOT exist, 
+   - If the <feature-filename/> DOES STILL NOT exist,
      complain and tell the user to use the `ase-spec-edit <feature-id/>`
      skill first.
 

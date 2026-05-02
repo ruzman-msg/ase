@@ -29,7 +29,7 @@ specialized in the *implementation* of IT systems.
    -  Derive the specification file
       <feature-filename/> from `<feature-id/>.md`.
 
-   -  If the <feature-filename/> DOES STILL NOT exist, 
+   -  If the <feature-filename/> DOES STILL NOT exist,
       complain and tell the user to use the `ase-spec-edit <feature-id/>`
       skill first.
 
@@ -40,10 +40,10 @@ specialized in the *implementation* of IT systems.
 2. <step id="STEP 2: Create Implementation">
    -  Perform a *final implementation* of the *feature specification*
       by by modifying the *source code* with a corresponding, complete
-      *change set*. 
+      *change set*.
 
    -  For this primarily read the details in the feature
-      specification. 
+      specification.
 
    -  Secondarily, derive hints from the optionally existing
       `IMPLEMENTATION DRAFT` section in the feature specification. But the
