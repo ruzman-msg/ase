@@ -4,18 +4,44 @@
 **  Licensed under GPL 3.0 <https://spdx.org/licenses/GPL-3.0-only>
 */
 
-import path           from "node:path"
-import fs             from "node:fs"
+import path                                 from "node:path"
+import fs                                   from "node:fs"
 
-import { Command }    from "commander"
-import { execaSync }  from "execa"
+import { Command }                          from "commander"
+import { execaSync }                        from "execa"
 
-import type Log       from "./ase-log.js"
-import Version        from "./ase-version.js"
+import type Log                             from "./ase-log.js"
+import Version                              from "./ase-version.js"
+import { Config, configSchema, parseScope } from "./ase-config.js"
 
 /*  CLI command "ase hook"  */
 export default class HookCommand {
     constructor (private log: Log) {}
+
+    /*  recursively expand "@<path>" file references in a Markdown text,
+        resolving paths relative to the directory of the containing file  */
+    private expandReferences (text: string, baseDir: string, visited = new Set<string>()): string {
+        return text.replace(/@([^\s]+)/g, (match, ref: string) => {
+            let resolved = ref
+            if (resolved.startsWith("~/"))
+                resolved = path.join(process.env.HOME ?? "", resolved.slice(2))
+            const abs = path.isAbsolute(resolved) ? resolved : path.resolve(baseDir, resolved)
+            if (visited.has(abs))
+                return match
+            if (!fs.existsSync(abs))
+                return match
+            let content: string
+            try {
+                content = fs.readFileSync(abs, "utf8")
+            }
+            catch (_e) {
+                return match
+            }
+            const next = new Set(visited)
+            next.add(abs)
+            return this.expandReferences(content, path.dirname(abs), next)
+        })
+    }
 
     /*  handler for "ase hook session-start"  */
     private async doSessionStart (): Promise<number> {
@@ -50,29 +76,64 @@ export default class HookCommand {
 
         /*  read session information  */
         const stdin = fs.readFileSync(0, "utf8")
-        const input = stdin.trim() !== "" ? JSON.parse(stdin) as { session_id?: string } : {}
+        const input = stdin.trim() !== "" ? JSON.parse(stdin) as
+            { session_id?: string, cwd?: string } : {}
 
         /*  determine session id  */
         const sessionId = input.session_id ?? ""
 
-        /*  determine task id  */
-        const taskId = process.env.ASE_TASK_ID ?? "default"
+        /*  establish config context  */
+        const cfg = new Config("config", configSchema, this.log, parseScope(`session:${sessionId}`))
         try {
-            execaSync("ase",
-                [ "config", `--scope=session:${sessionId}`, "set", "task.id", taskId ],
-                { stdio: [ "ignore", "ignore", "ignore" ] })
+            cfg.read()
         }
         catch (_e) {
             /*  best-effort: ignore failures  */
         }
 
-        /*  provide session and task id to Claude Code shell commands  */
+        /*  determine task id  */
+        const taskId = process.env.ASE_TASK_ID ?? "default"
+        try {
+            cfg.set("task.id", taskId)
+            cfg.write()
+        }
+        catch (_e) {
+            /*  best-effort: ignore failures  */
+        }
+
+        /*  determine project id  */
+        const cwd = input.cwd ?? process.cwd()
+        let projectDir = cwd
+        try {
+            const result = execaSync("git", [ "rev-parse", "--show-toplevel" ], {
+                stderr: "ignore", cwd
+            })
+            if (result.stdout.trim() !== "")
+                projectDir = result.stdout.trim()
+        }
+        catch {
+            /*  not inside a Git working tree  */
+        }
+        const projectId = path.basename(projectDir)
+
+        /*  determine user id  */
+        const userId = process.env.USER ?? process.env.LOGNAME ?? "unknown"
+
+        /*  determine agent persona style  */
+        let persona = "engineer"
+        const val = cfg.get("agent.persona.style")
+        if (typeof val === "string")
+            persona = val
+
+        /*  provide ASE information to Claude Code shell commands  */
         const envFile = process.env.CLAUDE_ENV_FILE ?? ""
         if (envFile !== "") {
             const script =
                 `export ASE_VERSION="${versionCurrentPlugin}"\n` +
-                `export ASE_SESSION_ID="${sessionId}"\n` +
-                `export ASE_TASK_ID="${taskId}"\n`
+                `export ASE_USER_ID="${userId}"\n` +
+                `export ASE_PROJECT_ID="${projectId}"\n` +
+                `export ASE_TASK_ID="${taskId}"\n` +
+                `export ASE_SESSION_ID="${sessionId}"\n`
             fs.appendFileSync(envFile, script, "utf8")
         }
 
@@ -80,9 +141,16 @@ export default class HookCommand {
         md =
             `<ase-version>${versionCurrentPlugin}</ase-version>\n` +
             `<ase-version-hint>${versionHint}</ase-version-hint>\n` +
+            `<ase-persona-style>${persona}</ase-persona-style>\n` +
+            `<ase-user-id>${userId}</ase-user-id>\n` +
+            `<ase-project-id>${projectId}</ase-project-id>\n` +
             `<ase-task-id>${taskId}</ase-task-id>\n` +
             `<ase-session-id>${sessionId}</ase-session-id>\n` +
             "\n" + md
+
+        /*  expand all @<file> references manually  */
+        md = this.expandReferences(md, path.dirname(fileMd))
+        fs.writeFileSync("/tmp/xxx", md, "utf8")
 
         /*  inject markdown into session context  */
         process.stdout.write(JSON.stringify({

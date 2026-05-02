@@ -5,6 +5,7 @@ ChangeLog
 0.0.17 (2026-05-02)
 -------------------
 
+- IMPROVEMENT: activate persona on startup and provide user and project information initially, too
 - IMPROVEMENT: ensure tools like "npm" and "claude" are found in $PATH
 - IMPROVEMENT: show current and latest version on startup, with hint on available updates
 - IMPROVEMENT: improve running of external commands (suppress output on success, emit on failure)

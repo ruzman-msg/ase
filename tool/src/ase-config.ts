@@ -178,7 +178,7 @@ const hasProjectContext = (): boolean => {
     "project" term is implicitly added only when a project context
     exists (Git repository or ".ase" directory at or above cwd), and
     an explicit "project" term requires that same context  */
-const parseScope = (value: string | undefined): Scope => {
+export const parseScope = (value: string | undefined): Scope => {
     const projectActive = hasProjectContext()
     const input         = (value === undefined || value === "") ?
         (projectActive ? "project" : "user") :
