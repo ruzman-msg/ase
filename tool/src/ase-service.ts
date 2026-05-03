@@ -418,16 +418,16 @@ export default class ServiceCommand {
                     const cfg = new Config("config", configSchema, this.log, scope)
                     cfg.read()
                     if (args.style !== undefined) {
-                        cfg.set("agent.persona.style", args.style)
+                        cfg.set("agent.persona", args.style)
                         cfg.write()
                         const where = args.session !== undefined ?
                             ` for session "${args.session}"` : ""
-                        const msg = `persona: OK: set agent.persona.style to "${args.style}"${where}`
+                        const msg = `persona: OK: set agent.persona to "${args.style}"${where}`
                         return {
                             content: [ { type: "text", text: msg } ]
                         }
                     }
-                    const val = cfg.get("agent.persona.style")
+                    const val = cfg.get("agent.persona")
                     if (val === undefined)
                         return {
                             content: [ { type: "text", text: "" } ]
@@ -464,15 +464,15 @@ export default class ServiceCommand {
                     const cfg = new Config("config", configSchema, this.log, scope)
                     cfg.read()
                     if (args.id !== undefined) {
-                        cfg.set("task.id", args.id)
+                        cfg.set("agent.task", args.id)
                         cfg.write()
-                        const msg = `task_id: OK: set task.id to "${args.id}" ` +
-                            `for session "${args.id}"`
+                        const msg = `task_id: OK: set agent.task to "${args.id}" ` +
+                            `for session "${args.session}"`
                         return {
                             content: [ { type: "text", text: msg } ]
                         }
                     }
-                    const val = cfg.get("task.id")
+                    const val = cfg.get("agent.task")
                     if (val === undefined)
                         return {
                             content: [ { type: "text", text: "" } ]

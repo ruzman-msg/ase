@@ -5,6 +5,7 @@ ChangeLog
 0.0.17 (2026-05-02)
 -------------------
 
+- CLEANUP: remove unused variables except for the "boxing" (coming soon)
 - CLEANUP: rename ase-meta-llm to ase-meta-chat to better fit to ase-meta-search
 - IMPROVEMENT: support "ase task list|load|save|delete|purge" for task editing
 - IMPROVEMENT: let persona and task be configured with ase-meta-{persona,task} and corresponding MCP tool

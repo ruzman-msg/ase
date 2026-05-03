@@ -23,7 +23,7 @@ const validateId = (id: string): void => {
 /*  resolve the on-disk path for a given task id  */
 const taskPath = (id: string): string => {
     validateId(id)
-    return path.join(os.homedir(), ".ase", "tasks", `${id}.md`)
+    return path.join(os.homedir(), ".ase", "task", id, "plan.md")
 }
 
 /*  load a task; returns empty string if no task exists  */
@@ -48,24 +48,26 @@ export const taskDelete = (id: string): boolean => {
     const file = taskPath(id)
     if (!fs.existsSync(file))
         return false
-    fs.rmSync(file)
+    fs.rmSync(path.dirname(file), { recursive: true, force: true })
     return true
 }
 
 /*  list all persisted task ids in lexicographic order  */
 export const taskList = (): string[] => {
-    const dir = path.join(os.homedir(), ".ase", "tasks")
+    const dir = path.join(os.homedir(), ".ase", "task")
     if (!fs.existsSync(dir))
         return []
     const ids: string[] = []
     for (const entry of fs.readdirSync(dir)) {
-        if (!entry.endsWith(".md"))
+        if (!/^[A-Za-z0-9-]+$/.test(entry))
             continue
-        const file = path.join(dir, entry)
-        const st   = fs.statSync(file)
+        const file = path.join(dir, entry, "plan.md")
+        if (!fs.existsSync(file))
+            continue
+        const st = fs.statSync(file)
         if (!st.isFile())
             continue
-        ids.push(entry.slice(0, -3))
+        ids.push(entry)
     }
     ids.sort()
     return ids
@@ -74,21 +76,24 @@ export const taskList = (): string[] => {
 /*  purge tasks whose modification time is older than the given cutoff in
     milliseconds; returns the list of removed task ids  */
 export const taskPurge = (maxAgeMs: number): string[] => {
-    const dir = path.join(os.homedir(), ".ase", "tasks")
+    const dir = path.join(os.homedir(), ".ase", "task")
     if (!fs.existsSync(dir))
         return []
     const cutoff  = Date.now() - maxAgeMs
     const removed: string[] = []
     for (const entry of fs.readdirSync(dir)) {
-        if (!entry.endsWith(".md"))
+        if (!/^[A-Za-z0-9-]+$/.test(entry))
             continue
-        const file = path.join(dir, entry)
-        const st   = fs.statSync(file)
+        const sub  = path.join(dir, entry)
+        const file = path.join(sub, "plan.md")
+        if (!fs.existsSync(file))
+            continue
+        const st = fs.statSync(file)
         if (!st.isFile())
             continue
         if (st.mtimeMs < cutoff) {
-            fs.rmSync(file)
-            removed.push(entry.slice(0, -3))
+            fs.rmSync(sub, { recursive: true, force: true })
+            removed.push(entry)
         }
     }
     return removed
@@ -113,7 +118,7 @@ export default class TaskCommand {
         /*  register CLI top-level command "ase task"  */
         const task = program
             .command("task")
-            .description("Manage persisted tasks under ~/.ase/tasks/<id>.md")
+            .description("Manage persisted tasks under ~/.ase/task/<id>/plan.md")
             .action(() => {
                 task.outputHelp()
                 process.exit(1)

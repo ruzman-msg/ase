@@ -19,95 +19,40 @@ import type Log                                     from "./ase-log.js"
 
 /*  classification taxonomy  */
 export const projectClassification = {
-    source: {
-        ambition:  [ "artist",    "craftsman", "engineer"  ],
-        boxing:    [ "white",     "grey",      "black"     ],
-        size:      [ "small",     "medium",    "large"     ],
-        structure: [ "bare",      "library",   "framework" ]
-    },
-    process: {
-        actors:    [ "person",    "team",      "crew"      ],
-        drive:     [ "spec",      "code",      "test"      ]
-    },
-    result: {
-        target:    [ "prototype", "mvp",       "product"   ]
-    }
+    boxing: [ "white", "grey", "black"     ]
 } as const
 
 /*  agent classification taxonomy  */
 export const agentClassification = {
-    persona: {
-        style:      [ "writer",    "engineer",   "telegrapher", "caveman" ],
-        creativity: [ "none",      "lite",       "full"                   ]
-    },
-    process: {
-        autonomy:   [ "assistant", "hotl",       "agent"                  ]
-    }
+    persona: [ "writer", "engineer", "telegrapher", "caveman" ]
 } as const
 
 /*  classification presets  */
 export const projectClassificationPresets: Record<string, Record<string, string>> = {
     vibe: {
-        "project.id":                "example",
-        "project.name":              "Example Project",
-        "project.source.ambition":   "engineer",
-        "project.source.boxing":     "black",
-        "project.source.size":       "small",
-        "project.source.structure":  "bare",
-        "project.process.actors":    "person",
-        "project.process.drive":     "spec",
-        "project.result.target":     "prototype",
-        "agent.persona.style":       "writer",
-        "agent.persona.creativity":  "full",
-        "agent.process.autonomy":    "agent"
+        "project.id":      "example",
+        "project.name":    "Example Project",
+        "project.boxing":  "black",
+        "agent.persona":   "writer"
     },
     pro: {
-        "project.id":                "example",
-        "project.name":              "Example Project",
-        "project.source.ambition":   "artist",
-        "project.source.boxing":     "white",
-        "project.source.size":       "medium",
-        "project.source.structure":  "framework",
-        "project.process.actors":    "person",
-        "project.process.drive":     "code",
-        "project.result.target":     "product",
-        "agent.persona.style":       "engineer",
-        "agent.persona.creativity":  "none",
-        "agent.process.autonomy":    "assistant"
+        "project.id":      "example",
+        "project.name":    "Example Project",
+        "project.boxing":  "white",
+        "agent.persona":   "engineer"
     },
     default: {
-        "project.id":                "example",
-        "project.name":              "Example Project",
-        "project.source.ambition":   "artist",
-        "project.source.boxing":     "white",
-        "project.source.size":       "medium",
-        "project.source.structure":  "framework",
-        "project.process.actors":    "person",
-        "project.process.drive":     "code",
-        "project.result.target":     "product",
-        "project.artifact.build":    "{etc/**,README.md,AGENTS.md,LICENSE.txt,package.json}",
-        "project.artifact.code":     "src/**/*",
-        "project.artifact.docs":     "doc/user/**/*.md",
-        "project.artifact.spec":     "doc/spec/**/*.md",
-        "project.artifact.arch":     "doc/arch/**/*.md",
-        "agent.persona.style":       "engineer",
-        "agent.persona.creativity":  "none",
-        "agent.process.autonomy":    "assistant",
-        "task.id":                   "default"
+        "project.id":      "example",
+        "project.name":    "Example Project",
+        "project.boxing":  "white",
+        "agent.persona":   "engineer",
+        "agent.task":      "default"
     },
     industry: {
-        "project.id":                "example",
-        "project.name":              "Example Project",
-        "project.source.ambition":   "craftsman",
-        "project.source.boxing":     "grey",
-        "project.source.size":       "large",
-        "project.source.structure":  "framework",
-        "project.process.actors":    "crew",
-        "project.process.drive":     "code",
-        "project.result.target":     "mvp",
-        "agent.persona.style":       "engineer",
-        "agent.persona.creativity":  "none",
-        "agent.process.autonomy":    "hotl"
+        "project.id":      "example",
+        "project.name":    "Example Project",
+        "project.boxing":  "grey",
+        "agent.persona":   "engineer"
     }
 }
 
@@ -123,7 +68,7 @@ type ScopeTerm =
     (reads always cascade through the full chain, this restricts writes only);
     keys absent from this map default to all non-"default" scope kinds  */
 export const configWritableScopes: Record<string, ReadonlyArray<ScopeTerm["kind"]>> = {
-    "task.id": [ "session" ]
+    "agent.task": [ "session" ]
 }
 
 /*  default set of scope kinds writable for any unrestricted key  */
@@ -209,38 +154,11 @@ export const configSchema = v.nullish(v.strictObject({
     project: v.optional(v.strictObject({
         id:      v.optional(v.pipe(v.string(), v.minLength(1))),
         name:    v.optional(v.pipe(v.string(), v.minLength(1))),
-        source:  v.optional(v.strictObject({
-            ambition:  v.optional(v.picklist(projectClassification.source.ambition)),
-            boxing:    v.optional(v.picklist(projectClassification.source.boxing)),
-            size:      v.optional(v.picklist(projectClassification.source.size)),
-            structure: v.optional(v.picklist(projectClassification.source.structure))
-        })),
-        process: v.optional(v.strictObject({
-            actors:    v.optional(v.picklist(projectClassification.process.actors)),
-            drive:     v.optional(v.picklist(projectClassification.process.drive))
-        })),
-        result:  v.optional(v.strictObject({
-            target:    v.optional(v.picklist(projectClassification.result.target))
-        })),
-        artifact: v.optional(v.strictObject({
-            build:     v.optional(v.pipe(v.string(), v.minLength(1))),
-            code:      v.optional(v.pipe(v.string(), v.minLength(1))),
-            docs:      v.optional(v.pipe(v.string(), v.minLength(1))),
-            spec:      v.optional(v.pipe(v.string(), v.minLength(1))),
-            arch:      v.optional(v.pipe(v.string(), v.minLength(1)))
-        }))
+        boxing:  v.optional(v.picklist(projectClassification.boxing))
     })),
     agent: v.optional(v.strictObject({
-        persona: v.optional(v.strictObject({
-            style:      v.optional(v.picklist(agentClassification.persona.style)),
-            creativity: v.optional(v.picklist(agentClassification.persona.creativity))
-        })),
-        process: v.optional(v.strictObject({
-            autonomy:   v.optional(v.picklist(agentClassification.process.autonomy))
-        }))
-    })),
-    task: v.optional(v.strictObject({
-        id:      v.optional(v.pipe(v.string(), v.minLength(1)))
+        persona: v.optional(v.picklist(agentClassification.persona)),
+        task:    v.optional(v.pipe(v.string(), v.minLength(1)))
     }))
 }))
 

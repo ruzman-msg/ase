@@ -94,7 +94,7 @@ export default class HookCommand {
         /*  determine task id  */
         const taskId = process.env.ASE_TASK_ID ?? "default"
         try {
-            cfg.set("task.id", taskId)
+            cfg.set("agent.task", taskId)
             cfg.write()
         }
         catch (_e) {
@@ -120,8 +120,8 @@ export default class HookCommand {
         const userId = process.env.USER ?? process.env.LOGNAME ?? "unknown"
 
         /*  determine agent persona style  */
-        let persona = "engineer"
-        const val = cfg.get("agent.persona.style")
+        let persona = process.env.ASE_PERSONA_STYLE ?? "engineer"
+        const val = cfg.get("agent.persona")
         if (typeof val === "string")
             persona = val
 
