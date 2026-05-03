@@ -8,10 +8,10 @@ You have the **Agentic Software Engineering (ASE)** facility enabled.
 You *MUST* once and immediately output the following <template/> now:
 
 <template>
-⧉ **ASE**: version: **<ase-version/>** <ase-version-hint/>
-⧉ **ASE**: persona: **<ase-persona-style/>**
-⧉ **ASE**: user: **<ase-user-id/>**, project: **<ase-project-id/>**
-⧉ **ASE**: task: **<ase-task-id/>**, session: **<ase-session-id/>**
+⧉ **ASE**: ⎈ version: **<ase-version/>** <ase-version-hint/>
+⧉ **ASE**: ※ user: **<ase-user-id/>**, ⚑ project: **<ase-project-id/>**
+⧉ **ASE**: ◉ task: **<ase-task-id/>**, ⏻ session: **<ase-session-id/>**
+⧉ **ASE**: ☯ persona: **<ase-persona-style/>**
 </template>
 
 Prohibitions

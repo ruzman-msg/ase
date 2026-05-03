@@ -15,7 +15,7 @@ import { Command }            from "commander"
 import Hapi                   from "@hapi/hapi"
 import axios                  from "axios"
 import type { AxiosError }    from "axios"
-import { isMap }              from "yaml"
+import { isMap, isScalar }    from "yaml"
 import * as v                 from "valibot"
 import prettyMs               from "pretty-ms"
 
@@ -23,9 +23,10 @@ import { McpServer }                     from "@modelcontextprotocol/sdk/server/
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js"
 import { z }                             from "zod"
 
-import { Config, configSchema } from "./ase-config.js"
+import { Config, configSchema, parseScope } from "./ase-config.js"
 import type Log                 from "./ase-log.js"
 import { renderDiagram }        from "./ase-diagram.js"
+import { taskLoad, taskSave, taskDelete, taskList } from "./ase-task.js"
 import pkg                      from "../package.json" with { type: "json" }
 
 interface Context {
@@ -288,6 +289,204 @@ export default class ServiceCommand {
                     return {
                         isError: true,
                         content: [ { type: "text", text: `diagram: render failed: ${message}` } ]
+                    }
+                }
+            })
+            mcp.registerTool("task_list", {
+                title:       "ASE task list",
+                description:
+                    "List all persisted task `id`s. " +
+                    "Returns the ids as `text`, one per line, in lexicographic order; " +
+                    "returns an empty string if no tasks exist.",
+                inputSchema: {}
+            }, async () => {
+                try {
+                    const ids = taskList()
+                    return {
+                        content: [ { type: "text", text: ids.join("\n") } ]
+                    }
+                }
+                catch (err: unknown) {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return {
+                        isError: true,
+                        content: [ { type: "text", text: `task_list: ERROR: ${message}` } ]
+                    }
+                }
+            })
+            mcp.registerTool("task_load", {
+                title:       "ASE task load",
+                description:
+                    "Load a previously persisted task by `id`. " +
+                    "Returns the task as `text`; returns an empty string if no task exists for the `id`.",
+                inputSchema: {
+                    id: z.string()
+                        .describe("task identifier (allowed characters: A-Z, a-z, 0-9, '-')")
+                }
+            }, async (args) => {
+                try {
+                    const text = taskLoad(args.id)
+                    return {
+                        content: [ { type: "text", text } ]
+                    }
+                }
+                catch (err: unknown) {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return {
+                        isError: true,
+                        content: [ { type: "text", text: `task_load: ERROR: ${message}` } ]
+                    }
+                }
+            })
+            mcp.registerTool("task_save", {
+                title:       "ASE task save",
+                description:
+                    "Persist a task as `text` under `id`. " +
+                    "Overwrites any existing task for the same `id`.",
+                inputSchema: {
+                    id: z.string()
+                        .describe("task identifier (allowed characters: A-Z, a-z, 0-9, '-')"),
+                    text: z.string()
+                        .describe("text content of the task")
+                }
+            }, async (args) => {
+                try {
+                    taskSave(args.id, args.text)
+                    return {
+                        content: [ { type: "text", text: `task_save: OK: saved task "${args.id}"` } ]
+                    }
+                }
+                catch (err: unknown) {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return {
+                        isError: true,
+                        content: [ { type: "text", text: `task_save: FAILED: ${message}` } ]
+                    }
+                }
+            })
+            mcp.registerTool("task_delete", {
+                title:       "ASE task delete",
+                description:
+                    "Delete a previously persisted task by `id`. " +
+                    "Returns a status `text` indicating whether a task existed and was removed.",
+                inputSchema: {
+                    id: z.string()
+                        .describe("task identifier (allowed characters: A-Z, a-z, 0-9, '-')")
+                }
+            }, async (args) => {
+                try {
+                    const removed = taskDelete(args.id)
+                    const msg     = removed ?
+                        `task_delete: OK: removed task "${args.id}"` :
+                        `task_delete: WARNING: no task "${args.id}" to remove`
+                    return {
+                        content: [ { type: "text", text: msg } ]
+                    }
+                }
+                catch (err: unknown) {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return {
+                        isError: true,
+                        content: [ { type: "text", text: `task_delete: ERROR: ${message}` } ]
+                    }
+                }
+            })
+            mcp.registerTool("persona", {
+                title:       "ASE persona style get/set",
+                description:
+                    "Get or set the active ASE agent persona `style`. " +
+                    "If `style` is provided, it sets the persona style, " +
+                    "otherwise it returns the current persona `style`. " +
+                    "If `session` is provided, the operation is scoped to that session, " +
+                    "otherwise it operates on the broadest scope (user/project cascade). " +
+                    "Allowed styles: \"writer\" (decorative, eloquent, explaining), " +
+                    "\"engineer\" (brief, factual, accurate), " +
+                    "\"telegrapher\" (very brief, factual, abbreviating), " +
+                    "\"caveman\" (ultra brief, rough, stuttering).",
+                inputSchema: {
+                    style: z.enum([ "writer", "engineer", "telegrapher", "caveman" ]).optional()
+                        .describe("persona style to set; if omitted, the current persona style is returned"),
+                    session: z.string().optional()
+                        .describe("session identifier (allowed characters: A-Z, a-z, 0-9, '-'); " +
+                            "if omitted, the operation is not scoped to a specific session")
+                }
+            }, async (args) => {
+                try {
+                    const scope = args.session !== undefined ?
+                        parseScope(`session:${args.session}`) :
+                        parseScope(undefined)
+                    const cfg = new Config("config", configSchema, this.log, scope)
+                    cfg.read()
+                    if (args.style !== undefined) {
+                        cfg.set("agent.persona.style", args.style)
+                        cfg.write()
+                        const where = args.session !== undefined ?
+                            ` for session "${args.session}"` : ""
+                        const msg = `persona: OK: set agent.persona.style to "${args.style}"${where}`
+                        return {
+                            content: [ { type: "text", text: msg } ]
+                        }
+                    }
+                    const val = cfg.get("agent.persona.style")
+                    if (val === undefined)
+                        return {
+                            content: [ { type: "text", text: "" } ]
+                        }
+                    const text = String(isScalar(val) ? val.value : val)
+                    return {
+                        content: [ { type: "text", text } ]
+                    }
+                }
+                catch (err: unknown) {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return {
+                        isError: true,
+                        content: [ { type: "text", text: `persona: ERROR: ${message}` } ]
+                    }
+                }
+            })
+            mcp.registerTool("task_id", {
+                title:       "ASE task id get/set",
+                description:
+                    "Get or set the active ASE task `id` for a given `session`. " +
+                    "If `id` is provided, it set the task id in the given `session`, " +
+                    "otherwise it returns the current task `id` of the `session`.",
+                inputSchema: {
+                    id: z.string().optional()
+                        .describe("task identifier to set (allowed characters: A-Z, a-z, 0-9, '-'); " +
+                            "if omitted, the current task id is returned"),
+                    session: z.string()
+                        .describe("session identifier (allowed characters: A-Z, a-z, 0-9, '-')")
+                }
+            }, async (args) => {
+                try {
+                    const scope = parseScope(`session:${args.session}`)
+                    const cfg = new Config("config", configSchema, this.log, scope)
+                    cfg.read()
+                    if (args.id !== undefined) {
+                        cfg.set("task.id", args.id)
+                        cfg.write()
+                        const msg = `task_id: OK: set task.id to "${args.id}" ` +
+                            `for session "${args.id}"`
+                        return {
+                            content: [ { type: "text", text: msg } ]
+                        }
+                    }
+                    const val = cfg.get("task.id")
+                    if (val === undefined)
+                        return {
+                            content: [ { type: "text", text: "" } ]
+                        }
+                    const text = String(isScalar(val) ? val.value : val)
+                    return {
+                        content: [ { type: "text", text } ]
+                    }
+                }
+                catch (err: unknown) {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return {
+                        isError: true,
+                        content: [ { type: "text", text: `task_id: ERROR: ${message}` } ]
                     }
                 }
             })

@@ -11,44 +11,41 @@ description: >
     "use persona <persona>", or invokes "/ase-meta-persona <persona>".
 user-invocable: true
 disable-model-invocation: false
-allowed-tools:
-    - "Bash(ase config *)"
 ---
 
-Token-Optimized Communication Persona
-=====================================
+Persona Configuration
+=====================
 
-Determine Persona and Scope
----------------------------
+1.  Determine request:
+    <request>$ARGUMENTS</request>
 
-<persona>$ARGUMENTS</persona>
+2.  <if condition="<request/> is empty">
+    -   Call the `persona(session: <ase-session-id/>)`
+        tool from the `ase` MCP service and set
+        <ase-persona-style/> to its `text` output.
 
-### Get Style
+    -   Output:
+        <template>
+        ⧉ **ASE**: ☯ persona: **<ase-persona-style/>**
+        </template>
+    </if>
 
-<if condition="<persona/> is empty">
--   Report current persona with the following <template/>:
-    <template>
-        ⧉ **ASE**: persona: **<ase-persona-style/>** (scope: **session**)
-    </template>
-</if>
+3.  <if condition="<request/> is NOT empty">
+    -   If <request/> is NEITHER 'writer', 'engineer', 'telegrapher', NOR 'caveman',
+        report this with the following <template/> and stop immediately:
+        <template>
+        ⧉ **ASE**: **ERROR:** invalid persona: "<request/>" (expected "writer", "engineer", "telegrapher", or "caveman")
+        </template>
 
-### Set Style
+    -   Set <ase-persona-style><request/></ase-persona-style> and
+        call the `persona(style: <ase-persona-style/>, session: <ase-session-id/>)`
+        tool from the `ase` MCP service.
 
-<if condition="<persona/> is either 'writer', 'engineer', 'telegrapher', or 'caveman'">
--   Set the current <ase-persona-style/> to: <persona/>
--   Persist it with:
-    `ase config --scope="session:<ase-session-id/>" set agent.persona.style "<ase-persona-style/>"`
--   Report this with the following <template/>:
-    <template>
-        ⧉ **ASE**: persona: **<ase-persona-style/>** (scope: **session**, *updated*)
-    </template>
-</if>
-<if condition="<persona/> is NOT empty AND NEITHER 'writer', 'engineer', 'telegrapher', NOR 'caveman'">
--   Report this with the following <template/>:
-    <template>
-        ERROR: invalid persona: "<persona/>" (expected "writer", "engineer", "telegrapher", or "caveman")
-    </template>
-</if>
+    -   Output:
+        <template>
+        ⧉ **ASE**: ☯ persona: **<ase-persona-style/>**
+        </template>
+    </if>
 
 Apply Persona
 -------------

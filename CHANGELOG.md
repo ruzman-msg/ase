@@ -6,6 +6,8 @@ ChangeLog
 -------------------
 
 - CLEANUP: rename ase-meta-llm to ase-meta-chat to better fit to ase-meta-search
+- IMPROVEMENT: support "ase task list|load|save|delete|purge" for task editing
+- IMPROVEMENT: let persona and task be configured with ase-meta-{persona,task} and corresponding MCP tool
 - IMPROVEMENT: activate persona on startup and provide user and project information initially, too
 - IMPROVEMENT: ensure tools like "npm" and "claude" are found in $PATH
 - IMPROVEMENT: show current and latest version on startup, with hint on available updates
