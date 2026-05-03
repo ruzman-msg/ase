@@ -69,7 +69,7 @@ export default class SetupCommand {
 
         /*  best-effort stop of background service  */
         this.log.write("info", `setup: update${dev ? "[dev]" : ""}: ` +
-            "stopping a potentially running ASE service")
+            "stopping potentially running ASE service")
         await this.run("ase", [ "service", "stop" ], { quiet: true })
 
         if (dev) {
@@ -114,7 +114,7 @@ export default class SetupCommand {
 
         /*  best-effort stop of background service  */
         this.log.write("info", `setup: uninstall${dev ? "[dev]" : ""}: ` +
-            "stopping a potentially running ASE service")
+            "stopping potentially running ASE service")
         await this.run("ase", [ "service", "stop" ], { quiet: true })
 
         /*  uninstall ASE Claude Code plugin  */
