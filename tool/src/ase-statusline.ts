@@ -78,7 +78,8 @@ export default class StatuslineCommand {
                 parseInteger("--margin"), 2)
             .argument("[lines...]",
                 "one or more template lines with %u %p %T %s %m %e %t %P %c placeholders " +
-                "(default: single line \"%m %e %t\")")
+                "and <color>...</color> markup (color: black, red, green, yellow, blue, " +
+                "magenta, cyan, white, default) (default: single line \"%m %e %t\")")
             .action(async (lines: string[], opts: StatuslineOpts) => {
                 /*  read all of stdin  */
                 const input = await readStdin()
@@ -125,17 +126,25 @@ export default class StatuslineCommand {
                 const width  = opts.width > 0 ? opts.width : detectTermWidth()
                 const budget = width > 0 ? width - 2 * opts.margin : 0
 
-                /*  configure ANSI sequences  */
-                const RESET  = "\x1b[0m"
+                /*  configure ANSI sequences for bold  */
                 const BOLD   = "\x1b[1m"
-                const BLACK  = "\x1b[30m"
-                const BLUE   = "\x1b[34m"
-                const YELLOW = "\x1b[33m"
-                const RED    = "\x1b[31m"
+                const NOBOLD = "\x1b[22m"
+
+                /*  configure ANSI foreground color map  */
+                const FG: Record<string, string> = {
+                    black:   "\x1b[30m",
+                    red:     "\x1b[31m",
+                    green:   "\x1b[32m",
+                    yellow:  "\x1b[33m",
+                    blue:    "\x1b[34m",
+                    magenta: "\x1b[35m",
+                    cyan:    "\x1b[36m",
+                    white:   "\x1b[37m",
+                    default: "\x1b[39m"
+                }
 
                 /*  determine context bar information  */
                 const barSize  = 20
-                const barColor = pct >= 80 ? RED : pct >= 60 ? YELLOW : pct >= 40 ? BLUE : RESET
                 const filled   = Math.round(pct / 100 * barSize)
                 const bar      = "█".repeat(filled) + "░".repeat(barSize - filled)
 
@@ -157,21 +166,21 @@ export default class StatuslineCommand {
 
                 /*  identifier -> renderer map  */
                 const renderers: Record<string, () => void> = {
-                    u: () => appendOutput(`${BLUE}※ user: ${BOLD}${user}${RESET}`),
-                    p: () => appendOutput(`${RED}⚑ project: ${BOLD}${dir}${RESET}`),
+                    u: () => appendOutput(`※ user: ${BOLD}${user}${NOBOLD}`),
+                    p: () => appendOutput(`⚑ project: ${BOLD}${dir}${NOBOLD}`),
                     T: () => {
                         if (taskId !== "")
-                            appendOutput(`${BLACK}◉ task: ${BOLD}${taskId}${RESET}`)
+                            appendOutput(`◉ task: ${BOLD}${taskId}${NOBOLD}`)
                     },
-                    s: () => appendOutput(`⏻ session: ${BOLD}${sessionId}${RESET}`),
-                    m: () => appendOutput(`⚙ model: ${BOLD}${model}${RESET}`),
-                    e: () => appendOutput(`⚒ effort: ${BOLD}${effort}${RESET}`),
-                    t: () => appendOutput(`⚛ thinking: ${BOLD}${thinking}${RESET}`),
+                    s: () => appendOutput(`⏻ session: ${BOLD}${sessionId}${NOBOLD}`),
+                    m: () => appendOutput(`⚙ model: ${BOLD}${model}${NOBOLD}`),
+                    e: () => appendOutput(`⚒ effort: ${BOLD}${effort}${NOBOLD}`),
+                    t: () => appendOutput(`⚛ thinking: ${BOLD}${thinking}${NOBOLD}`),
                     P: () => {
                         if (persona !== "")
-                            appendOutput(`☯ persona: ${BOLD}${persona}${RESET}`)
+                            appendOutput(`☯ persona: ${BOLD}${persona}${NOBOLD}`)
                     },
-                    c: () => appendOutput(`${barColor}◔ context: ${bar} ${pct}%${RESET}`)
+                    c: () => appendOutput(`◔ context: ${bar} ${pct}%${NOBOLD}`)
                 }
 
                 /*  determine effective template lines  */
@@ -183,6 +192,14 @@ export default class StatuslineCommand {
                     while (i < line.length) {
                         const ch   = line[i]!
                         const next = line[i + 1]
+                        if (ch === "<") {
+                            const m = line.slice(i).match(/^<(\/?)([a-z]+)>/)
+                            if (m !== null && FG[m[2]!] !== undefined) {
+                                appendOutput(m[1] === "/" ? FG.default! : FG[m[2]!]!)
+                                i += m[0].length
+                                continue
+                            }
+                        }
                         if (ch === "%" && next !== undefined && renderers[next] !== undefined) {
                             renderers[next]!()
                             i += 2

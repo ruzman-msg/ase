@@ -180,8 +180,13 @@ statusline:
   `%P` (persona, suppressed if empty), and `%c` (context-usage
   progress bar with a 20-cell bar and percentage). The context bar
   color shifts from default to blue, yellow, and red as context usage
-  crosses 40%, 60%, and 80%. If no *line* arguments are given, a
-  single default line `"%m %e %t"` is rendered. The active task id
+  crosses 40%, 60%, and 80%. In addition, each *line* may contain
+  `<`*color*`>`...`</`*color*`>` markup to colorize literal text,
+  where *color* is one of `black`, `red`, `green`, `yellow`, `blue`,
+  `magenta`, `cyan`, `white`, or `default`. A closing tag resets the
+  foreground color to the terminal default (no nesting); unrecognized
+  color names are kept literally in the output. If no *line* arguments
+  are given, a single default line `"%m %e %t"` is rendered. The active task id
   and persona style are resolved from the *ASE* configuration cascade
   (with the current session id) and fall back to the `ASE_TASK_ID`
   and `ASE_PERSONA_STYLE` environment variables. Each rendered line

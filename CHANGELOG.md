@@ -6,6 +6,7 @@ ChangeLog
 -------------------
 
 - IMPROVEMENT: refactor "ase statusline" CLI command to support flexible expansion of information
+- IMPROVEMENT: add coloring functionality to "ase statusline" CLI command
 
 0.0.19 (2026-05-03)
 -------------------
