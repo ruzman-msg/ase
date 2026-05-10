@@ -12,20 +12,35 @@ of a *Claude Code* plugin and a Command-Line Interface (CLI) tool.
 
 - `tool/` — the `@rse/ase` npm CLI (TypeScript, ESM, commander-based).
   Entry point `tool/src/ase.ts` wires the top-level commands `config`,
-  `service`, `mcp`, `hook`, `diagram`, `setup`, and `task`, each
-  registered by a corresponding `ase-<name>.ts` module. `ase config`
-  manages layered YAML configuration across `user`/`project`/`task`/
-  `session` scopes; `ase service` runs a per-project background HTTP
-  service bridged to *Claude Code* via `ase mcp`; `ase hook` handles
-  *Claude Code* hook events; `ase setup` installs/updates/uninstalls
-  the tool and its companion plugin; `ase task` manages persisted task
-  plans under `~/.ase/task/<id>/plan.md`; `ase diagram` renders Mermaid
-  diagrams as Unicode/ASCII art.
+  `service`, `mcp`, `hook`, `diagram`, `setup`, `statusline`, and
+  `task`, each registered by a corresponding `ase-<name>.ts` module.
+  `ase config` manages layered YAML configuration across `user`/
+  `project`/`task`/`session` scopes; `ase service` runs a per-project
+  background HTTP service bridged to *Claude Code* via `ase mcp`; `ase
+  hook` handles *Claude Code* hook events (and emits the Copilot hook
+  variant); `ase setup` installs/updates/uninstalls the tool and its
+  companion plugin; `ase statusline` renders the *Claude Code* status
+  line; `ase task` manages persisted task plans under `~/.ase/task/
+  <id>/plan.md`; `ase diagram` renders Mermaid diagrams as Unicode/
+  ASCII art.
 
 - `plugin/` — the Claude Code plugin published via the marketplace
-  defined at `.claude-plugin/marketplace.json`. Plugin metadata
-  in `plugin/.claude-plugin/plugin.json`; skills live under
-  `plugin/skills/<name>/SKILL.md`.
+  defined at `.claude-plugin/marketplace.json`. Plugin metadata in
+  `plugin/.claude-plugin/plugin.json`. Layout:
+  - `plugin/skills/<name>/SKILL.md` — the skill set, grouped by
+    `ase-meta-*` (chat, search, task, persona, plan, diagram, evaluate,
+    quorum, why), `ase-code-*` (analyze, changes, commit, craft,
+    explain, insight, lint, refactor, resolve), `ase-arch-*` (analyze,
+    discover), and `ase-spec-*` (edit, implement, preflight).
+  - `plugin/agents/<name>.md` — sub-agent definitions (`ase-meta-chat`,
+    `ase-meta-search`).
+  - `plugin/commands/<name>/*.md` — slash commands; currently the
+    `ase-code-lint` chord (`complete`, `explain`, `nope`, `reassess`,
+    `recheck`, `refine`).
+  - `plugin/hooks/hooks.json` and `plugin/hooks/hooks-copilot.json` —
+    hook wirings into *Claude Code* / Copilot.
+  - `plugin/meta/ase-constitution.md` and `plugin/meta/ase-skill.md` —
+    the constitution and skill-authoring guide injected into sessions.
 
 The root `README.md` is user-facing install docs;
 `pages/` is the GitHub Pages site (`.github/workflows/static.yml`).
@@ -48,16 +63,12 @@ npm start clean-dist    # also removes node_modules and package-lock.json
 
 No test target is defined. The published `bin/ase` shim loads compiled output from `dst/`.
 
-## Plugin Install (Local Development)
-
-`plugin/Makefile` wraps the `claude plugin` CLI for local iteration:
+## Setup
 
 ```
-cd plugin
-make install     # marketplace add ./ + plugin install ase@ase
-make reinstall   # uninstall + install
-make update      # plugin update ase@ase (default target)
-make uninstall
+ase setup install      # install   tool and plugin
+ase setup update       # update    tool and plugin
+ase setup uninstall    # uninstall tool and plugin
 ```
 
 ## Code Style
