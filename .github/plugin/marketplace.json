@@ -1,0 +1,17 @@
+{
+    "name":                "ase",
+    "owner": {
+        "name":            "Dr. Ralf S. Engelschall",
+        "email":           "rse@engelschall.com"
+    },
+    "metadata": {
+        "description":     "Agentic Software Engineering (ASE)"
+    },
+    "plugins": [
+        {
+            "name":        "ase",
+            "source":      "./plugin/",
+            "description": "Agentic Software Engineering (ASE)"
+        }
+    ]
+}

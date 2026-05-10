@@ -1,0 +1,20 @@
+{
+    "name":        "ase",
+    "version":     "0.0.21",
+    "description": "Agentic Software Engineering (ASE)",
+    "keywords":    [ "agentic", "software", "engineering" ],
+    "homepage":    "https://ase.tools",
+    "repository":  "https://github.com/rse/ase",
+    "license":     "GPL-3.0",
+    "author": {
+        "name":    "Dr. Ralf S. Engelschall",
+        "email":   "rse@engelschall.com",
+        "url":     "https://engelschall.com"
+    },
+    "mcpServers": {
+        "ase": {
+            "command": "ase",
+            "args":    [ "mcp" ]
+        }
+    }
+}

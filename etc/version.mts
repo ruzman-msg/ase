@@ -28,7 +28,8 @@ console.log(`++ new version: ${version}`)
 for (const file of [
     "package.json",
     "tool/package.json",
-    "plugin/.claude-plugin/plugin.json"
+    "plugin/.claude-plugin/plugin.json,"
+    "plugin/.github/plugin/plugin.json
 ] as const) {
     console.log(`++ update file: "${file}"`)
     const ast = json.parse(fs.readFileSync(file, "utf8"))
