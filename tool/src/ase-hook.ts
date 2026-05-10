@@ -78,16 +78,13 @@ export default class HookCommand {
         })
     }
 
-    /*  handler for "ase hook session-start"
-        (NOTICE: Claude Code only: Copilot CLI's "sessionStart"
-        command-type hook discards stdout, so its constitution is wired
-        up via a static "type: prompt" hook in plugin/hooks/hooks.json
-        instead) */
-    private async doSessionStart (): Promise<number> {
-        /*  determine plugin root  */
-        const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT ?? ""
+    /*  handler for "ase hook session-start" (both tools)  */
+    private async doSessionStart (tool: Tool): Promise<number> {
+        /*  determine plugin root (env var name differs per tool)  */
+        const pluginRootVar = tool === "copilot" ? "COPILOT_PLUGIN_ROOT" : "CLAUDE_PLUGIN_ROOT"
+        const pluginRoot = process.env[pluginRootVar] ?? ""
         if (pluginRoot === "")
-            throw new Error("CLAUDE_PLUGIN_ROOT environment variable is not set")
+            throw new Error(`${pluginRootVar} environment variable is not set`)
 
         /*  determine path to external files  */
         const filePkg = path.join(pluginRoot, ".claude-plugin", "plugin.json")
@@ -113,13 +110,14 @@ export default class HookCommand {
             versionHints.push("**NOTICE:** *development* setup")
         const versionHint = versionHints.length > 0 ? "(" + versionHints.join(", ") + ")" : ""
 
-        /*  read session information  */
+        /*  read session information (Claude Code uses snake_case fields,
+            Copilot CLI uses camelCase fields)  */
         const stdin = fs.readFileSync(0, "utf8")
         const input = stdin.trim() !== "" ? JSON.parse(stdin) as
-            { session_id?: string, cwd?: string } : {}
+            { session_id?: string, sessionId?: string, cwd?: string } : {}
 
         /*  determine session id  */
-        const sessionId = input.session_id ?? ""
+        const sessionId = input.session_id ?? input.sessionId ?? ""
 
         /*  establish config context  */
         const cfg = new Config("config", configSchema, this.log, parseScope(`session:${sessionId}`))
@@ -164,8 +162,9 @@ export default class HookCommand {
         if (typeof val === "string")
             persona = val
 
-        /*  provide ASE information to Claude Code shell commands  */
-        const envFile = process.env.CLAUDE_ENV_FILE ?? ""
+        /*  provide ASE information to Claude Code shell commands
+            (Claude Code only -- Copilot CLI has no equivalent mechanism)  */
+        const envFile = tool === "claude" ? (process.env.CLAUDE_ENV_FILE ?? "") : ""
         if (envFile !== "") {
             const script =
                 `export ASE_VERSION="${versionCurrentPlugin}"\n` +
@@ -190,13 +189,18 @@ export default class HookCommand {
         /*  expand all @<file> references manually  */
         md = this.expandReferences(md, path.dirname(fileMd))
 
-        /*  inject markdown into session context  */
-        process.stdout.write(JSON.stringify({
+        /*  inject markdown into session context.
+            Claude Code expects the context nested in "hookSpecificOutput";
+            Copilot CLI expects a flat top-level "additionalContext" field.  */
+        const payload = tool === "claude" ? {
             "hookSpecificOutput": {
                 "hookEventName":     "SessionStart",
                 "additionalContext": md
             }
-        }))
+        } : {
+            "additionalContext": md
+        }
+        process.stdout.write(JSON.stringify(payload))
         return 0
     }
 
@@ -280,13 +284,13 @@ export default class HookCommand {
                 process.exit(1)
             })
 
-        /*  register CLI sub-command "ase hook session-start"
-            (Claude Code only -- see comment on doSessionStart)  */
+        /*  register CLI sub-command "ase hook session-start"  */
         hookCmd
             .command("session-start")
-            .description("handle Claude Code SessionStart hook event")
-            .action(async () => {
-                process.exit(await this.doSessionStart())
+            .description("handle SessionStart hook event")
+            .option("-t, --tool <tool>", "target tool (\"claude\" or \"copilot\")", toolDflt)
+            .action(async (opts: { tool: string }) => {
+                process.exit(await this.doSessionStart(this.parseTool(opts.tool)))
             })
 
         /*  register CLI sub-command "ase hook pre-tool-use"  */

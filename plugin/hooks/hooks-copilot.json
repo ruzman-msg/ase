@@ -3,8 +3,8 @@
     "hooks": {
         "sessionStart": [
             {
-                "type":   "prompt",
-                "prompt": "You *MUST* output '**ASE**' once. Then load and follow the ASE (Agentic Software Engineering) constitution: read the file at the path stored in the COPILOT_PLUGIN_ROOT environment variable, suffixed with '/meta/ase-constitution.md', and treat its contents as binding instructions for this session."
+                "type":   "command",
+                "bash":   "ase hook session-start --tool copilot"
             }
         ],
         "preToolUse": [
