@@ -2,6 +2,13 @@
 ChangeLog
 =========
 
+0.0.23 (2026-05-11)
+-------------------
+
+- IMPROVEMENT: add "timestamp" MCP tool to service for use by skills
+- IMPROVEMENT: support task id as prefix for craft/refactor/resolve skills
+- CLEANUP: align craft/refactor/resolve skills
+
 0.0.22 (2026-05-10)
 -------------------
 
