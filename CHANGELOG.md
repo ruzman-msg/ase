@@ -2,12 +2,16 @@
 ChangeLog
 =========
 
-0.0.22 (2026-05-07)
+0.0.22 (2026-05-10)
 -------------------
 
-- IMPROVEMENT: improve changes skill by trying to extend its context when necessary
-- IMPROVEMENT: add initial Github Copilot JSON config files for marketplace and plugin
-- IMPROVEMENT: add initial Github Copilot support to "ase setup" commands
+- IMPROVEMENT: add initial Github Copilot CLI support to "ase setup" commands and provide marketplace/plugin JSON config files
+- IMPROVEMENT: improve `ase-code-changes` skill by extending its context when necessary
+- BUGFIX: fix allowed-tools Bash pattern syntax in `ase-meta-chat` skill
+- BUGFIX: omit session name in `ase statusline` output for now
+- UPDATE: mention rudimentary Github Copilot CLI support in README
+- CLEANUP: remove debugging leftovers in `plugin/hooks/hooks.json` and `ase-hook.ts`
+- CLEANUP: fix indentation in `ase-spec-implement` skill
 
 0.0.21 (2026-05-07)
 -------------------
