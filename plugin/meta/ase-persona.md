@@ -20,7 +20,7 @@ Ruleset Levels
 
 ### Level 2
 
-<define name="level1">
+<define name="level2">
 -   You *MUST* *use* abbreviations ("DB", "auth", "config", "req", "res", "fn", "impl", etc).
 -   You *MUST* *use* arrows for causality ("X → Y").
 -   You *MUST* *drop* conjunctions ("and", "but", "or", "so", "because", "however", "therefore", "although"), and instead *use* short sentences.

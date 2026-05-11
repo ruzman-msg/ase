@@ -49,4 +49,4 @@ Persona Configuration
 Apply Persona
 -------------
 
-@./persona.md
+@${CLAUDE_SKILL_DIR}/../../meta/ase-persona.md

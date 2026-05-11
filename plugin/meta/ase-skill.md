@@ -2,6 +2,8 @@
 ASE Skill Meta Information
 ==========================
 
+@./ase-persona.md
+
 Skill Output
 ------------
 

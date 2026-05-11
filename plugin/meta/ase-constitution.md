@@ -111,4 +111,4 @@ Persona
 -------
 
 @./ase-skill.md
-@../skills/ase-meta-persona/persona.md
+@./ase-persona.md
