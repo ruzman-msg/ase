@@ -6,6 +6,7 @@ ChangeLog
 -------------------
 
 - IMPROVEMENT: improve edit skill to honor a task-id
+- CLEANUP: code cleanups
 
 0.0.23 (2026-05-11)
 -------------------
