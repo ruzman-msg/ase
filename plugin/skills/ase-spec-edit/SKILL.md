@@ -74,19 +74,29 @@ Manage the Plan for a Task
    accept any <content/> and continue the planning with this particular
    plan content.
 
-8. You *MUST* then immediately exit *Plan Mode* by calling the
-   `ExitPlanMode` tool.
-
-9. Once the user will leave *Plan Mode* by using the `ExitPlanMode` tool,
-   you *always* *MUST* update <content/> to be the last plan content
-   from the *Plan Mode*. Then you *always* *MUST* *save* the updated
-   <content/> with the `task_save` tool (`id` set to <ase-task-id/>, `text`
-   set to <content/>) before proceeding with any further operations.
-   Calculate the number of words <words/> of <content/>. Do not output
-   anything related to this MCP tool call, except the following
-   <template/>:
+8. You *MUST* output the following <template/>:
 
    <template>
-   &#x1F7E0; task: **<ase-task-id/>**, plan: **<words/>** words, status: plan **saved**
+   ◉ **NOTICE**: In the following, we will try to exit the *Plan Mode*
+   again. You can still *chat* on the plan in order to still change it.
+   Or just press **SHIFT+TAB** twice to finally exit the *Plan Mode*. We
+   will then just exit the *Plan Mode* and do nothing more, especially
+   we will *NOT* execute the plan at this time anyway!
    </template>
+
+9. You *MUST* then immediately exit *Plan Mode* by calling the
+   `ExitPlanMode` tool.
+
+10. Once the user will leave *Plan Mode* by using the `ExitPlanMode` tool,
+    you *always* *MUST* update <content/> to be the last plan content
+    from the *Plan Mode*. Then you *always* *MUST* *save* the updated
+    <content/> with the `task_save` tool (`id` set to <ase-task-id/>, `text`
+    set to <content/>) before proceeding with any further operations.
+    Calculate the number of words <words/> of <content/>. Do not output
+    anything related to this MCP tool call, except the following
+    <template/>:
+
+    <template>
+    &#x1F7E0; task: **<ase-task-id/>**, plan: **<words/>** words, status: plan **saved**
+    </template>
 
