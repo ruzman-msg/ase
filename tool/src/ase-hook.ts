@@ -103,7 +103,7 @@ export default class HookCommand {
         const versionHints = []
         if (versionCurrentPlugin !== versionCurrentTool)
             versionHints.push("**WARNING:** version *mismatch*: " +
-                `tool: **${versionCurrentPlugin}**, plugin: **${versionCurrentTool}**`)
+                `tool: **${versionCurrentTool}**, plugin: **${versionCurrentPlugin}**`)
         if (versionCurrentTool !== versionLatestTool)
             versionHints.push(`**NOTICE:** *latest* version: **${versionLatestTool}**, please update!`)
         if (process.env.ASE_SETUP_DEV !== undefined)
