@@ -189,7 +189,7 @@ MCP Tool Calls
         or other infrastructure problem),
         output the following and stop immediately:
         <template>
-        ⧉ **ASE**: **ERROR:** MCP tool unavailable: <tool-name/> 
+        ⧉ **ASE**: **ERROR:** MCP tool unavailable: <tool-name/>
         </template>
     -   If the response `text` starts with or contains `ERROR:`
         output the following and stop immediately:
