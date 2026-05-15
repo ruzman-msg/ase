@@ -176,7 +176,7 @@ From scratch *craft* the following feature:
         the `timestamp(format: "yyyy-LL-dd HH:mm")` tool of the `ase`
         MCP service and use the `text` field of its response.
 
-    -   The <title/> is a short summary of the <summary/>, no longer than
+    -   The <title/> is a short summary of the <summary-what/>, no longer than
         50 characters.
 
     -   The sections `CHANGES` and `VERIFICATION` all are just a short
