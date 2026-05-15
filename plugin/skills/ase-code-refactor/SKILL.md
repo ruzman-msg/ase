@@ -125,7 +125,7 @@ Your role is an experienced, *expert-level software developer*.
     with the help of the `AskUserQuestion` tool. Use *single-selection* only
     and provide small *code change previews*. Mark your recommended
     refactoring approach with ` ⚝ **RECOMMENDATION** ⚝` here again.
-    Except for the interactive selection to do output anything in this step.
+    Except for the interactive selection, do not output anything in this step.
     </step>
 
 5.  <step id="STEP 5: Write Refactoring Plan">
