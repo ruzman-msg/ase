@@ -176,7 +176,7 @@ Your role is an experienced, *expert-level software developer*.
         <summary-what/> tell what is changed. In <summary-why/> tell why it
         is changed, or what benefit results.
 
-    -   The <timestamp-created/> is the timestamp when this feature specification
+    -   The <timestamp-created/> is the timestamp when this artifact refactoring specification
         was created. The <timestamp-modified/> is the timestamp when
         this feature specification was last modified. Both use a
         ISO-style format value, which has to be determined by calling

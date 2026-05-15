@@ -218,7 +218,7 @@ Your role is an experienced, *expert-level software developer*.
     -   For <problem-summary/> and <solution-summary/> use *ultra brief* but
         as *very precise* as possible description of the overall change.
 
-    -   The <timestamp-created/> is the timestamp when this feature specification
+    -   The <timestamp-created/> is the timestamp when this problem resolution specification
         was created. The <timestamp-modified/> is the timestamp when
         this feature specification was last modified. Both use a
         ISO-style format value, which has to be determined by calling

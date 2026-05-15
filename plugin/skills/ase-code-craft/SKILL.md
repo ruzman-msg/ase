@@ -171,7 +171,7 @@ From scratch *craft* the following feature:
         <summary-what/> tell what is changed. In <summary-why/> tell why it
         is changed, or what benefit results.
 
-    -   The <timestamp-created/> is the timestamp when this feature specification
+    -   The <timestamp-created/> is the timestamp when this feature crafting specification
         was created. The <timestamp-modified/> is the timestamp when
         this feature specification was last modified. Both use a
         ISO-style format value, which has to be determined by calling
