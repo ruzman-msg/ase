@@ -270,9 +270,9 @@ export default class ServiceCommand {
                     "control-flow/branching/concurrency as a Flowchart, " +
                     "state-machine/states/transitions as an UML State Diagram, " +
                     "data-flow/actors/messages/protocols as an UML Sequence Diagram, " +
-                    "data-structure/classes/methods as an UML Class Diagram " +
+                    "data-structure/classes/methods as an UML Class Diagram, " +
                     "data-model/entities/relationships as an ER Diagram, or " +
-                    "metrics/distributions/time-series as a XY-Charts. " +
+                    "metrics/distributions/time-series as an XY-Chart. " +
                     "Pass the Mermaid diagram specification as `diagram`. " +
                     "Returns the rendered art as `text`.",
                 inputSchema: {
