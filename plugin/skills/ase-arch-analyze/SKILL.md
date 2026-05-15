@@ -95,6 +95,8 @@ allowed-tools:
     - "Bash(awk:* | head:*)"
     - "Bash(sort:* | uniq:*)"
     - "Bash(sort:* | head:*)"
+    - "Agent"
+    - "Skill"
 ---
 
 @${CLAUDE_SKILL_DIR}/../../meta/ase-persona.md
