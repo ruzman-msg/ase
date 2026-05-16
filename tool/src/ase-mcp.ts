@@ -8,9 +8,6 @@ import path                   from "node:path"
 import { fileURLToPath }      from "node:url"
 
 import { Command }            from "commander"
-import axios                  from "axios"
-import type { AxiosError }    from "axios"
-import * as v                 from "valibot"
 import { execa }              from "execa"
 
 import { StdioServerTransport }          from "@modelcontextprotocol/sdk/server/stdio.js"
@@ -19,40 +16,7 @@ import type { JSONRPCMessage }           from "@modelcontextprotocol/sdk/types.j
 
 import { Config, configSchema } from "./ase-config.js"
 import type Log                 from "./ase-log.js"
-
-const HOST = "127.0.0.1"
-
-/*  schema for ".ase/service.yaml" (same shape as in ase-service.ts)  */
-const serviceSchema = v.nullish(v.strictObject({
-    port: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1024), v.maxValue(65535)))
-}))
-
-/*  distinguish ECONNREFUSED from other Axios transport errors  */
-const isConnRefused = (err: unknown): boolean => {
-    const e = err as AxiosError & { code?: string, cause?: { code?: string } }
-    return e?.code === "ECONNREFUSED" || e?.cause?.code === "ECONNREFUSED"
-}
-
-/*  probe the service and verify ASE identity banner  */
-const probe = async (port: number, projectId: string): Promise<boolean | null> => {
-    try {
-        const r = await axios.request({
-            method:         "OPTIONS",
-            url:            `http://${HOST}:${port}/`,
-            timeout:        2000,
-            validateStatus: () => true
-        })
-        if (r.status < 200 || r.status >= 300)
-            return false
-        const d = r.data as { ase?: boolean, projectId?: string } | null
-        return d?.ase === true && d?.projectId === projectId
-    }
-    catch (err: unknown) {
-        if (isConnRefused(err))
-            return null
-        throw err
-    }
-}
+import { SERVICE_HOST as HOST, serviceSchema, probe } from "./ase-service-probe.js"
 
 /*  CLI command "ase mcp"  */
 export default class MCPCommand {

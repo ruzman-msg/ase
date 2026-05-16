@@ -14,9 +14,7 @@ import type { ChildProcess }  from "node:child_process"
 import { Command }            from "commander"
 import Hapi                   from "@hapi/hapi"
 import axios                  from "axios"
-import type { AxiosError }    from "axios"
 import { isMap, isScalar }    from "yaml"
-import * as v                 from "valibot"
 import prettyMs               from "pretty-ms"
 
 import { McpServer }                     from "@modelcontextprotocol/sdk/server/mcp.js"
@@ -32,6 +30,7 @@ import {
     detectTermHeight
 }                               from "./ase-diagram.js"
 import { taskLoad, taskSave, taskDelete, taskList } from "./ase-task.js"
+import { SERVICE_HOST as HOST, serviceSchema, probe } from "./ase-service-probe.js"
 import pkg                      from "../package.json" with { type: "json" }
 
 interface Context {
@@ -43,17 +42,11 @@ interface Context {
 
 const SERVE_ENV  = "ASE_SERVICE_SERVE"
 const PORT_ENV   = "ASE_SERVICE_PORT"
-const HOST       = "127.0.0.1"
 const IDLE_MS    = 30 * 60 * 1000
 const TICK_MS    = 60 * 1000
 const PORT_MIN   = 42000
 const PORT_MAX   = 44000
 const PORT_TRIES = 20
-
-/*  schema for ".ase/service.yaml"  */
-const serviceSchema = v.nullish(v.strictObject({
-    port: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1024), v.maxValue(65535)))
-}))
 
 /*  try binding a single candidate port to verify availability  */
 const tryBind = (port: number): Promise<boolean> => {
@@ -96,33 +89,6 @@ const clearPort = (svc: Config): void => {
     }
     else
         svc.write()
-}
-
-/*  distinguish ECONNREFUSED from other Axios transport errors  */
-const isConnRefused = (err: unknown): boolean => {
-    const e = err as AxiosError & { code?: string, cause?: { code?: string } }
-    return e?.code === "ECONNREFUSED" || e?.cause?.code === "ECONNREFUSED"
-}
-
-/*  probe the service and verify ASE identity banner  */
-const probe = async (port: number, projectId: string): Promise<boolean | null> => {
-    try {
-        const r = await axios.request({
-            method:         "OPTIONS",
-            url:            `http://${HOST}:${port}/`,
-            timeout:        2000,
-            validateStatus: () => true
-        })
-        if (r.status < 200 || r.status >= 300)
-            return false
-        const d = r.data as { ase?: boolean, projectId?: string } | null
-        return d?.ase === true && d?.projectId === projectId
-    }
-    catch (err: unknown) {
-        if (isConnRefused(err))
-            return null
-        throw err
-    }
 }
 
 /*  spawn the current executable detached as a background service  */
