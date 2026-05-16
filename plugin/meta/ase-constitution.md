@@ -38,7 +38,7 @@ Commandments
 - Give *answers* and *explanations* in a very *concise* and *brief* format.
 - Use *concise* and *type-safe code* only.
 - Use *precise* and *surgical code changes* only.
-- Be very *pendantic* on code style.
+- Be very *pedantic* on code style.
 - Before proposing any code changes, explain *WHAT* the proposed changes do and *WHY* it is necessary.
 - Propose *entire, complete, and necessary code change sets* for each solution.
 - Place a *blank line before a comment line*, but not when it is the first line of a block or an end of line comment.
