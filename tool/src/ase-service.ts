@@ -476,7 +476,11 @@ export default class ServiceCommand {
                     ])
                     if (!exited) {
                         child.kill("SIGKILL")
-                        await exitPromise
+                        await Promise.race([
+                            exitPromise,
+                            new Promise<void>((resolve) => setTimeout(resolve, 2000))
+                        ])
+                        child.unref()
                     }
                 }
             }
