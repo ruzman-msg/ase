@@ -287,9 +287,11 @@ export default class TaskCommand {
 export class TaskMCP {
     constructor (private log: Log) {}
 
+    /*  register MCP tools  */
     register (mcp: McpServer): void {
+        /*  task list  */
         mcp.registerTool("task_list", {
-            title:       "ASE task list",
+            title: "ASE task list",
             description:
                 "List all persisted tasks. " +
                 "Returns a `tasks` array (in lexicographic `id` order) where each item has the " +
@@ -328,8 +330,10 @@ export class TaskMCP {
                 }
             }
         })
+
+        /*  task load  */
         mcp.registerTool("task_load", {
-            title:       "ASE task load",
+            title: "ASE task load",
             description:
                 "Load a previously persisted task by `id`. " +
                 "Returns the task as `text`; returns an empty string if no task exists for the `id`.",
@@ -352,8 +356,10 @@ export class TaskMCP {
                 }
             }
         })
+
+        /*  task save  */
         mcp.registerTool("task_save", {
-            title:       "ASE task save",
+            title: "ASE task save",
             description:
                 "Persist a task as `text` under `id`. " +
                 "Overwrites any existing task for the same `id`.",
@@ -379,7 +385,7 @@ export class TaskMCP {
             }
         })
         mcp.registerTool("task_delete", {
-            title:       "ASE task delete",
+            title: "ASE task delete",
             description:
                 "Delete a previously persisted task by `id`. " +
                 "Returns a status `text` indicating whether a task existed and was removed.",
@@ -405,8 +411,10 @@ export class TaskMCP {
                 }
             }
         })
+
+        /*  task id get/set  */
         mcp.registerTool("task_id", {
-            title:       "ASE task id get/set",
+            title: "ASE task id get/set",
             description:
                 "Get or set the active ASE task `id` for a given `session`. " +
                 "If `id` is provided, it sets the task id in the given `session`, " +
