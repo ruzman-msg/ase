@@ -262,5 +262,11 @@ Your role is an experienced, *expert-level software developer*.
     ✔ **RESULT**: Problem Resolving Plan Created.
     ▶ **NEXT**: `ase-task-edit`, `ase-task-preflight`, or `ase-task-implement`.
     </template>
+
+    <expand name="next-step" arg1="ase-code-resolve">
+        { label: "Skill: ase-task-edit",      description: "Edit the task plan again." },
+        { label: "Skill: ase-task-preflight", description: "Preflight the task plan (non-destructive)." },
+        { label: "Skill: ase-task-implement", description: "Implement the task plan (destructive)." }
+    </expand>
     </step>
 </flow>

@@ -5,6 +5,8 @@ ChangeLog
 0.0.29 (2026-05-16)
 -------------------
 
+- IMPROVEMENT: at end of craft/resolve/refactor skills, interactively ask for next step
+
 0.0.28 (2026-05-16)
 -------------------
 
