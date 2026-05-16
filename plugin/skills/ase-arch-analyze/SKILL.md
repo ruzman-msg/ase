@@ -56,7 +56,7 @@ allowed-tools:
     - "Bash(git config --list:*)"
     - "Bash(git remote:*)"
     - "Bash(git branch:*)"
-    - "Bash(git tag:list:*)"
+    - "Bash(git tag --list:*)"
     - "Bash(git describe:*)"
     - "Bash(git shortlog:*)"
     - "Bash(find * -name:*)"
