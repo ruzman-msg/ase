@@ -5,7 +5,6 @@
 */
 
 import path          from "node:path"
-import os            from "node:os"
 import fs            from "node:fs"
 
 import { Command }   from "commander"
@@ -22,10 +21,30 @@ const validateId = (id: string): void => {
         throw new Error("task: id must match [A-Za-z0-9-]+")
 }
 
+/*  determine the project root (Git top-level if inside a Git
+    working tree, otherwise the current working directory)  */
+const projectRoot = (): string => {
+    try {
+        const result = execaSync("git", [ "rev-parse", "--show-toplevel" ], { stderr: "ignore" })
+        const top = result.stdout.trim()
+        if (top !== "")
+            return top
+    }
+    catch {
+        /*  not inside a Git working tree  */
+    }
+    return process.cwd()
+}
+
+/*  resolve the on-disk base directory for task storage  */
+const taskBaseDir = (): string => {
+    return path.join(projectRoot(), ".ase", "task")
+}
+
 /*  resolve the on-disk path for a given task id  */
 const taskPath = (id: string): string => {
     validateId(id)
-    return path.join(os.homedir(), ".ase", "task", id, "plan.md")
+    return path.join(taskBaseDir(), id, "plan.md")
 }
 
 /*  load a task; returns empty string if no task exists  */
@@ -37,8 +56,8 @@ export const taskLoad = (id: string): string => {
 }
 
 /*  save a task as UTF-8 text under the given id; the task's home
-    directory ~/.ase/task/<id>/ is owned by ASE and removed in full
-    by taskDelete, so callers must not place foreign files there  */
+    directory <project>/.ase/task/<id>/ is owned by ASE and removed
+    in full by taskDelete, so callers must not place foreign files there  */
 export const taskSave = (id: string, text: string): void => {
     if (typeof text !== "string")
         throw new Error("task: text must be a string")
@@ -48,7 +67,7 @@ export const taskSave = (id: string, text: string): void => {
 }
 
 /*  delete a task by id; removes the entire task home directory
-    ~/.ase/task/<id>/ (owned by ASE); returns true if a task existed  */
+    <project>/.ase/task/<id>/ (owned by ASE); returns true if a task existed  */
 export const taskDelete = (id: string): boolean => {
     const file = taskPath(id)
     if (!fs.existsSync(file))
@@ -61,7 +80,7 @@ export const taskDelete = (id: string): boolean => {
     each entry's `mtime` is set to the `plan.md` modification time formatted
     as "YYYY-MM-DD HH:MM", otherwise it is left undefined  */
 export const taskList = (verbose = false): { id: string, mtime: string | undefined }[] => {
-    const dir = path.join(os.homedir(), ".ase", "task")
+    const dir = taskBaseDir()
     if (!fs.existsSync(dir))
         return []
     const out: { id: string, mtime: string | undefined }[] = []
@@ -84,7 +103,7 @@ export const taskList = (verbose = false): { id: string, mtime: string | undefin
 /*  purge tasks whose modification time is older than the given cutoff in
     milliseconds; returns the list of removed task ids  */
 export const taskPurge = (maxAgeMs: number): string[] => {
-    const dir = path.join(os.homedir(), ".ase", "task")
+    const dir = taskBaseDir()
     if (!fs.existsSync(dir))
         return []
     const cutoff  = Date.now() - maxAgeMs
@@ -126,7 +145,7 @@ export default class TaskCommand {
         /*  register CLI top-level command "ase task"  */
         const task = program
             .command("task")
-            .description("Manage persisted tasks under ~/.ase/task/<id>/plan.md")
+            .description("Manage persisted tasks under <project>/.ase/task/<id>/plan.md")
             .action(() => {
                 task.outputHelp()
                 process.exit(1)

@@ -20,7 +20,7 @@ of a *Claude Code* plugin and a Command-Line Interface (CLI) tool.
   hook` handles *Claude Code* hook events (and emits the Copilot hook
   variant); `ase setup` installs/updates/uninstalls the tool and its
   companion plugin; `ase statusline` renders the *Claude Code* status
-  line; `ase task` manages persisted task plans under `~/.ase/task/
+  line; `ase task` manages persisted task plans under `<project>/.ase/task/
   <id>/plan.md`; `ase diagram` renders Mermaid diagrams as Unicode/
   ASCII art.
 
