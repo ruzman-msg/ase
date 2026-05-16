@@ -6,6 +6,7 @@ ChangeLog
 -------------------
 
 - IMPROVEMENT: at end of craft/resolve/refactor skills, interactively ask for next step
+- IMPROVEMENT: provide a key/value storage MCP tool set for temporary information sharing in skills
 
 0.0.28 (2026-05-16)
 -------------------

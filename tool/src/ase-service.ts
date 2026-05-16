@@ -28,6 +28,7 @@ import { Config, configSchema }          from "./ase-config.js"
 import type Log                          from "./ase-log.js"
 import { DiagramMCP }                    from "./ase-diagram.js"
 import { TaskMCP }                       from "./ase-task.js"
+import { KVMCP }                         from "./ase-kv.js"
 import PersonaMCP                        from "./ase-persona.js"
 import pkg                               from "../package.json" with { type: "json" }
 
@@ -275,6 +276,7 @@ export default class ServiceCommand {
             new ServiceMCP({ projectId: ctx.projectId, port: ctx.port, startTime }).register(mcp)
             new DiagramMCP().register(mcp)
             new TaskMCP(this.log).register(mcp)
+            new KVMCP().register(mcp)
             new PersonaMCP(this.log).register(mcp)
             return mcp
         }
