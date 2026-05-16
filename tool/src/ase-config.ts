@@ -382,9 +382,9 @@ export class Config {
                     progressed = true
                 }
                 else
-                    /*  root-level issue is structurally unrecoverable: do not wipe
-                        the document, let the next strict validate() surface it  */
-                    return
+                    /*  root-level issue cannot be deleted; skip it and process
+                        remaining issues so progressed is tracked correctly  */
+                    continue
             }
             if (!progressed)
                 return
