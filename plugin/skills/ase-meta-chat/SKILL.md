@@ -32,8 +32,9 @@ Query foreign LLM for: <query>$ARGUMENTS</query>
 
 <flow>
 1.  <step id="STEP 1: Select LLMs">
-    Use the *first word* of the following <query/> for selecting the foreign
-    LLM to query, and its corresponding MCP server, from the following list:
+    Use the *first word* of the following <query/> for selecting the
+    foreign LLMs to query, and their corresponding MCP servers, from the
+    following list:
 
     - **OpenAI ChatGPT**: via MCP server `chat-openai-chatgpt`
     - **Google Gemini**:  via MCP server `chat-google-gemini`
@@ -42,15 +43,16 @@ Query foreign LLM for: <query>$ARGUMENTS</query>
     </step>
 
 2.  <step id="STEP 2: Spawn Agents">
-    Spawn a *sub-task* with the `ase-meta-chat` *agent* for the selected foreign LLMs,
-    and pass the *second and all remaining* words of the following <query/>
-    as the query for the selected LLM.
+    Spawn a *sub-task* with the `ase-meta-chat` *agent* for the selected
+    foreign LLMs, and pass the *second and all remaining* words of the
+    following <query/> as the query for the selected LLM.
     </step>
 
 3.  <step id="STEP 3: Return Responses">
-    Return the *plain response* of the `ase-meta-chat` agent 1:1 and *without any
-    modifications*. Especially, do *NOT* add or remove any text from the agent
-    response on your own and do not interpret the result in any way.
+    Return the *plain response* of the `ase-meta-chat` agent 1:1 and
+    *without any modifications*. Especially, do *NOT* add or remove any
+    text from the agent response on your own and do not interpret the
+    result in any way.
     </step>
 </flow>
 
