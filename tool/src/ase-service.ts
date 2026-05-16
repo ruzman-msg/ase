@@ -21,8 +21,6 @@ import * as v                 from "valibot"
 
 import { McpServer }                     from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js"
-import { z }                             from "zod"
-import { DateTime }                      from "luxon"
 
 import { Config, configSchema }          from "./ase-config.js"
 import type Log                          from "./ase-log.js"
@@ -30,6 +28,7 @@ import { DiagramMCP }                    from "./ase-diagram.js"
 import { TaskMCP }                       from "./ase-task.js"
 import { KVMCP }                         from "./ase-kv.js"
 import PersonaMCP                        from "./ase-persona.js"
+import { TimestampMCP }                  from "./ase-timestamp.js"
 import pkg                               from "../package.json" with { type: "json" }
 
 /*  shared service host  */
@@ -196,31 +195,6 @@ export class ServiceMCP {
                 content: [ { type: "text", text: JSON.stringify(status) } ]
             }
         })
-        mcp.registerTool("timestamp", {
-            title: "ASE timestamp",
-            description:
-                "Return the current local date/time formatted via a Luxon format string. " +
-                "Pass the Luxon format tokens as `format` (default: `yyyy-LL-dd HH:mm`). " +
-                "Returns the formatted timestamp as `text`.",
-            inputSchema: {
-                format: z.string().default("yyyy-LL-dd HH:mm")
-                    .describe("Luxon format tokens (default: `yyyy-LL-dd HH:mm`)")
-            }
-        }, async (args) => {
-            try {
-                const text = DateTime.now().toFormat(args.format)
-                return {
-                    content: [ { type: "text", text } ]
-                }
-            }
-            catch (err: unknown) {
-                const message = err instanceof Error ? err.message : String(err)
-                return {
-                    isError: true,
-                    content: [ { type: "text", text: `timestamp: format failed: ${message}` } ]
-                }
-            }
-        })
     }
 }
 
@@ -278,6 +252,7 @@ export default class ServiceCommand {
             new TaskMCP(this.log).register(mcp)
             new KVMCP().register(mcp)
             new PersonaMCP(this.log).register(mcp)
+            new TimestampMCP().register(mcp)
             return mcp
         }
 
