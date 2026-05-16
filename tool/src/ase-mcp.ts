@@ -82,10 +82,12 @@ export default class MCPCommand {
                 return
             bridgeDone = true
             closedByUs = true
-            await Promise.allSettled([
-                server.close(),
-                client?.close()
+            const timeout = new Promise<void>((resolve) => setTimeout(resolve, 3000))
+            await Promise.race([
+                Promise.allSettled([ server.close(), client?.close() ]),
+                timeout
             ])
+            process.exit(0)
         }
 
         /*  (re-)connect the HTTP client to the service  */
