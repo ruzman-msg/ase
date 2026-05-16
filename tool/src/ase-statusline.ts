@@ -115,14 +115,24 @@ const readStdin = async (): Promise<string> => {
 /*  detect terminal column width via /dev/tty (stdout is a pipe under Claude Code)  */
 const detectTermWidth = (): number => {
     let width = 0
+    let tty: number | null = null
     try {
-        const tty = fs.openSync("/dev/tty", "r")
+        tty = fs.openSync("/dev/tty", "r")
         const out = execFileSync("tput", [ "cols" ], { stdio: [ tty, "pipe", "ignore" ] })
-        fs.closeSync(tty)
         width = Number.parseInt(out.toString("utf8").trim(), 10) || 0
     }
     catch (_e) {
         /*  no controlling terminal  */
+    }
+    finally {
+        if (tty !== null) {
+            try {
+                fs.closeSync(tty)
+            }
+            catch (_e) {
+                /*  best-effort  */
+            }
+        }
     }
     return width
 }
