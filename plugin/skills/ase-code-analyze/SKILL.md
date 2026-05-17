@@ -97,7 +97,7 @@ flow* is found.
    <template>
    &#x26AA; **NEXT STEP**: For deeper analysis, suggestions on solution
    approaches and then final source code changes, use `/ase-code-resolve
-   P{n}` in the same or a different *Claude Code* session of this project.
+   P{n}` in the same or a different session of this project.
    </template>
    </step>
 </flow>
