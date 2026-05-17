@@ -199,7 +199,7 @@ explicitly requested by this procedure via outputs based on a <template/>!
             Only output the following <template/> and then *STOP*.
 
             <template>
-            ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **plan created -- done**
+            ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **done**
             </template>
 
         -   If <result/> is `EDIT`:
@@ -209,7 +209,7 @@ explicitly requested by this procedure via outputs based on a <template/>!
             current skill once the `Skill` tool was used.
 
             <template>
-            ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **plan created -- edit**
+            ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **hand off to edit**
             </template>
 
         -   If <result/> is `PREFLIGHT`:
@@ -219,7 +219,7 @@ explicitly requested by this procedure via outputs based on a <template/>!
             current skill once the `Skill` tool was used.
 
             <template>
-            ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **plan created -- preflight**
+            ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **hand off to preflight**
             </template>
 
         -   If <result/> is `IMPLEMENT`:
@@ -229,5 +229,5 @@ explicitly requested by this procedure via outputs based on a <template/>!
             current skill once the `Skill` tool was used.
 
             <template>
-            ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **plan created -- implement**
+            ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **hand off to implement**
             </template>
