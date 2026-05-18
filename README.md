@@ -107,7 +107,7 @@ Features
 Design Decisions
 ----------------
 
-**ASE** is based on the following distinct design decisions:
+**ASE** is based on the following four distinct design decisions:
 
 - **Agent &amp; Plugin**:
   **ASE** is a plugin for the agent tools Claude Code and GitHub Copilot
@@ -133,6 +133,8 @@ Design Decisions
 
 Overview
 --------
+
+The following gives a short overview of the concepts and building blocks of **ASE**:
 
 ### Agentic Levels &amp; ASE Sweetspot
 
