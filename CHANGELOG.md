@@ -5,6 +5,9 @@ ChangeLog
 0.0.34 (2026-05-18)
 -------------------
 
+- IMPROVEMENT: draw a operation modes matrix diagram
+- CLEANUP: crop diagram SVGs
+
 0.0.33 (2026-05-18)
 -------------------
 
