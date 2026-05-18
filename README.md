@@ -113,7 +113,7 @@ focuses on the levels 1-3, i.e., it supports the assisted, agentic, and
 delegated modes of operations best. **ASE** is especially not intended
 for the full autonomous agent mode of operation.
 
-![building-blocks](docs/agentic-levels.svg)
+[![building-blocks](docs/agentic-levels.svg)](docs/agentic-levels.pdf)
 
 ### Skills &amp; Workflow
 
@@ -152,7 +152,7 @@ of the task to perform) which mode to choose:
 **ASE** primarily consists of a constitution, various skills, and
 corresponding (CLI or MCP driven) tools.
 
-![building-blocks](docs/building-blocks.svg)
+[![building-blocks](docs/building-blocks.svg)](docs/building-blocks.pdf)
 
 Documentation
 -------------
