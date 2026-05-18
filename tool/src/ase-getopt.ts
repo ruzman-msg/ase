@@ -9,7 +9,8 @@ import { z }                  from "zod"
 import { Command, Option }    from "commander"
 import {
     parse as shParse,
-    quote as shQuote }        from "shell-quote"
+    quote as shQuote
+} from "shell-quote"
 
 /*  MCP registration entry point for the option-parser tool  */
 export class GetoptMCP {
@@ -18,7 +19,7 @@ export class GetoptMCP {
             title: "ASE option parser",
             description:
                 "Parse `args` against the options specification in " +
-                "`spec` of the form `--<long>[/-<short>][=<default>] ...` " +
+                "`spec` of the form `--<long>[|-<short>][=<default>] ...` " +
                 "and return `{ opts, argv, args, info }` as JSON `text`, where " +
                 "`argv` is the array of remaining tokens after option parsing, " +
                 "`args` is the verbatim substring of the original input " +
@@ -55,7 +56,7 @@ export class GetoptMCP {
 
                 /*  tokenize spec and add one option per token  */
                 const tokens = shParse(args.spec).filter((e): e is string => typeof e === "string")
-                const re = /^--([A-Za-z][A-Za-z0-9-]*)(?:\/-([A-Za-z]))?(?:=(.*))?$/
+                const re = /^--([A-Za-z][A-Za-z0-9-]*)(?:\|-([A-Za-z]))?(?:=(.*))?$/
                 for (const tok of tokens) {
                     const m = re.exec(tok)
                     if (m === null)
