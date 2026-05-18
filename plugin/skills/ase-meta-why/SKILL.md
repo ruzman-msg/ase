@@ -38,10 +38,10 @@ addressing surface-level symptoms.
 
 2.  <step id="STEP 2: ROOT-CAUSE ANALYSIS">
     Find the root-cause of <problem/> by following the following iteration cycle.
-    Start with a <question/> equal to the <problem/>.
+    Start with a <question/> set equal to the <problem/>.
 
     <for items="1 2 3 4 5">
-        Ask <question/> and document the <answer/> with the following template:
+        Ask <question/> and document the answer in <answer/> with the following template:
         Don't stop at symptoms, keep digging for systemic issues.
         Multiple root-causes may exist -- explore different branches.
         Consider both technical, domain-specific, process-related or organizational causes.
@@ -50,7 +50,7 @@ addressing surface-level symptoms.
         &#x26AA; **WHY <item/>**: <answer/>
         </template>
 
-        Then, for the next iteration let <question/> now be the last <answer/>.
+        Then, for the next iteration set <question/> now to be the last <answer/>.
         The magic is NOT in exactly 5 "Why" -- you can <break/> the iteration
         when you already reached the root-cause.
     </for>

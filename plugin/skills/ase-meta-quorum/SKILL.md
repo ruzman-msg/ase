@@ -26,7 +26,7 @@ by querying *multiple* AIs for an *optimal consensus*.
 <flow>
 1.  <step id="STEP 1: Determine Own Answer">
     Determine your own answer.
-    For yourself (Anthropic Claude), first answer the following *<query/>* in advance:
+    For yourself (Anthropic Claude), first answer the following <query/> in advance:
 
     <query>
     $ARGUMENTS.
@@ -53,7 +53,7 @@ by querying *multiple* AIs for an *optimal consensus*.
 3.  <step id="STEP 3: Query Foreign AIs">
     For each of the following foreign AIs and their potentially
     available, given, corresponding MCP servers, use a *sub-task* and
-    the `ase-meta-chat` *agent* to perform the above same *<query/>* zero
+    the `ase-meta-chat` *agent* to perform the above same <query/> zero
     or more times and in *parallel* again:
 
     - OpenAI ChatGPT: `chat-openai-chatgpt`

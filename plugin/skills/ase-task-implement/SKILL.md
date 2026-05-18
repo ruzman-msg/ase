@@ -151,7 +151,7 @@ explicitly requested by this procedure via outputs based on a <template/>!
         -   If <result/> is `DELETE`:
             Only output the following <template/> and then use the
             `Skill` tool to invoke the `ase:ase-task-delete` skill in
-            order to *implement* the updated plan. Immediately stop
+            order to *delete* the updated plan. Immediately stop
             processing the current skill once the `Skill` tool was used.
 
             <template>
