@@ -76,7 +76,7 @@ User Setup
 
 ### Prerequisites
 
-- [Claude Code](https://code.claude.com)
+- [Claude Code](https://code.claude.com) or [Github Copilot CLI](https://github.com/features/copilot/cli)
 - [Node.js](https://nodejs.org)
 
 ### Installation
@@ -85,22 +85,22 @@ User Setup
 #   install ASE tool into PATH (bootstrapping only)
 npm install -g @rse/ase
 
-#   install ASE plugin into Claude Code
-ase setup install
+#   install ASE plugin into agent tool
+ase setup install [--tool claude|copilot]
 ```
 
 ### Updating
 
 ```
-#   update ASE tool in PATH and ASE plugin in Claude Code
-ase setup update
+#   update ASE tool in PATH and ASE plugin in agent tool
+ase setup update [--tool claude|copilot]
 ```
 
 ### Uninstallation
 
 ```
-#   uninstall ASE tool from PATH and ASE plugin from Claude Code
-ase setup uninstall
+#   uninstall ASE tool from PATH and ASE plugin from agent tool
+ase setup uninstall [--tool claude|copilot]
 ```
 
 Overview
