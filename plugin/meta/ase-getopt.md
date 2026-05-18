@@ -9,9 +9,9 @@ set placeholders into the context as a side-effect.
 
 1.  **Determine Parameters**:
     Set <getopt-skill><arg1/></getopt-skill>.
-    Set <getopt-spec/><arg2/></getopt-spec>.
-    Set <getopt-opts/><arg3/></getopt-opts>.
-    Set <getopt-args/><content/></getopt-args>.
+    Set <getopt-spec><arg2/></getopt-spec>.
+    Set <getopt-opts><arg3/></getopt-opts>.
+    Set <getopt-args><content/></getopt-args>.
 
 2.  **Short-Circuit for Quick Processing**:
     If <getopt-opts/> contains `quick` *AND*
@@ -56,7 +56,7 @@ set placeholders into the context as a side-effect.
     Set <getopt-option-<long/>/> to the corresponding value from
     `<getopt-result/>.opts[<long/>]`.
     Set <getopt-arguments/> to the value of `<getopt-result/>.args`.
-    Set <getopt-info/> to `<getopt-result/>`.info`.
+    Set <getopt-info/> to `<getopt-result/>.info`.
 
 7.  **Display Results**:
     Just output the following <template/>:
