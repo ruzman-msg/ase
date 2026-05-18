@@ -8,6 +8,7 @@ ChangeLog
 - IMPROVEMENT: add "ase setup enable" and "ase setup disable" for enabling/disabling ASE in the agent tool
 - IMPROVEMENT: truncate IMPLEMENTATION DRAFT section in "ase-task-edit" skill
 - IMPROVEMENT: add a ase-getopt.md (plugin) and ase-getopt.ts (tool) for option parsing
+- IMPROVEMENT: support option -a|--auto (prefer A1) and -n|--next (choose step) in "ase-code-{craft,refactor,resolve}" skills
 - BUGFIX: fix bundling of plugin into tool
 - BUGFIX: try to force "ase-code-{craft,refactor,resolve}" skills even hard to not immediately implement.
 

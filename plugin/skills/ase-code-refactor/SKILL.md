@@ -14,6 +14,7 @@ allowed-tools:
 @${CLAUDE_SKILL_DIR}/../../meta/ase-persona.md
 @${CLAUDE_SKILL_DIR}/../../meta/ase-skill.md
 @${CLAUDE_SKILL_DIR}/../../meta/ase-dialog.md
+@${CLAUDE_SKILL_DIR}/../../meta/ase-getopt.md
 
 Refactor Artifacts
 ==================
@@ -22,13 +23,19 @@ Refactor Artifacts
 Refactor Artifacts
 </skill>
 
+<expand name="getopt"
+    arg1="ase-code-refactor"
+    arg2="--auto|-a --next|-n=(none|DONE|EDIT|PREFLIGHT|IMPLEMENT)">
+    $ARGUMENTS
+</expand>
+
 <role>
 Your role is an experienced, *expert-level software developer*.
 </role>
 
 <objective>
 *Refactor* existing artifacts the following way:
-<request>$ARGUMENTS</request>
+<request><arguments/></request>
 </objective>
 
 @${CLAUDE_SKILL_DIR}/../../meta/ase-plan.md
@@ -164,11 +171,20 @@ permitted way to persist artifacts is via `task_save(...)`.
 
 4.  **Choose Refactoring Approach**:
 
-    1.  Let the *user interactively choose* the preferred refactoring approach A<n/>
+    1.  If <getopt-option-auto/> is equal `true`:
+        Let the *user interactively choose* the preferred refactoring approach A<n/>
         with the help of the <user-dialog-tool/> tool. Use *single-selection* only
         and provide small *code change previews*. Mark your recommended
         refactoring approach with ` ⚝ **RECOMMENDATION** ⚝` here again.
         Except for the interactive selection, do not output anything in this step.
+
+    2.  If <getopt-option-auto/> is not equal `true`:
+        Set <n/> to the number of the refactoring approach A<n/> you recommend.
+        Output a hint with the following <template/>:
+
+        <template>
+        ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ▶ status: **auto-chosen approach A<n/>**
+        </template>
 
 5.  **Compose Refactoring Plan**:
 
@@ -197,16 +213,22 @@ permitted way to persist artifacts is via `task_save(...)`.
         ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **plan created**
         </template>
 
-    5.  *Ask user*: Let the *user interactively choose*
-        what to do as the next step.
+    5.  *Determine next step*:
 
-        <expand name="user-dialog>
-        Next Step: How would you like to proceed with the plan?
-        DONE: Stop processing.
-        EDIT: Hand processing off to editing.
-        PREFLIGHT: Hand processing off to preflighting.
-        IMPLEMENT: Hand processing off to implementation.
-        </expand>
+        -   If <getopt-option-next/> matches the regex `^(DONE|EDIT|PREFLIGHT|IMPLEMENT)$`:
+            Honor the pre-selection what to do as the next step.
+            Set <result><getopt-option-next/></result>.
+
+        -   If <getopt-option-next/> is equal to `none`:
+            Let the *user interactively choose* what to do as the next step.
+
+            <expand name="user-dialog>
+                Next Step: How would you like to proceed with the plan?
+                DONE: Stop processing.
+                EDIT: Hand processing off to editing.
+                PREFLIGHT: Hand processing off to preflighting.
+                IMPLEMENT: Hand processing off to implementation.
+            </expand>
 
     6.  Check the tool <result/> and dispatch accordingly:
 
