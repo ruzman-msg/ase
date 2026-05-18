@@ -168,6 +168,7 @@ explicitly requested by this procedure via outputs based on a <template/>!
         code base. Use the <format/> defined for a task plan and inject
         the information from feature A<n/> and all derived realization
         decisions into it. Store the resulting task plan in <content/>.
+        You still *MUST* *NOT* modify any artifacts at this time!
 
     2.  Call the `timestamp(format: "yyyy-LL-dd HH:mm")` tool of the
         `ase` MCP service and use the `text` field of its response for

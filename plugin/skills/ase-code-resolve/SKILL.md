@@ -224,6 +224,7 @@ explicitly requested by this procedure via outputs based on a <template/>!
         diff* of the necessary code changes, and a possible way to verify
         the success of the resolution, by using the <format/> defined for a
         task plan. Store the resulting task plan in <content/>.
+        You still *MUST* *NOT* modify any artifacts at this time!
 
     2.  Call the `timestamp(format: "yyyy-LL-dd HH:mm")` tool of the
         `ase` MCP service and use the `text` field of its response for
