@@ -6,6 +6,7 @@ ChangeLog
 -------------------
 
 - BUGFIX: fix XML syntax in ase-getopt.md
+- BUGFIX: fix unterminated regexp literal in ase-getopt.md
 
 0.0.35 (2026-05-18)
 -------------------
