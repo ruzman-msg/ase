@@ -50,7 +50,7 @@ Features
   the scopes *user*, *project*, *task*, and *skill*. This allows
   the flexible configuration of **ASE**.
 
-- [**Session Constitution**](plugin/meta/ase-constitution.md) (80% done):
+- [**Session Constitution**](plugin/meta/ase-constitution.md) (95% done):
   All agent sessions have a "constitution" preloaded all the time, based
   on the configured parameters. This allows to control the *general*
   agent behavior.
