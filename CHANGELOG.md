@@ -5,6 +5,8 @@ ChangeLog
 0.0.36 (2026-05-18)
 -------------------
 
+- BUGFIX: fix XML syntax in ase-getopt.md
+
 0.0.35 (2026-05-18)
 -------------------
 
