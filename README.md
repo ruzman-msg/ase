@@ -27,7 +27,7 @@ Development*.
 
 > [!NOTE]
 > Initially, the primary focus of **ASE** is on the Agentic AI Coding
-> tool *Claude Code*. Secondary focus is on the support for *Github
+> tool *Claude Code*. Secondary focus is on the support for *GitHub
 > Copilot CLI* (just set environment variable `ASE_TOOL=copilot`).
 > Later, a forthcoming focus could be also on the alternative tools
 > *OpenAI Codex*, *Google Gemini CLI*, or *OpenCode* &mdash; if their
@@ -76,7 +76,7 @@ User Setup
 
 ### Prerequisites
 
-- [Claude Code](https://code.claude.com) or [Github Copilot CLI](https://github.com/features/copilot/cli)
+- [Claude Code](https://code.claude.com) or [GitHub Copilot CLI](https://github.com/features/copilot/cli)
 - [Node.js](https://nodejs.org)
 
 ### Installation
