@@ -543,6 +543,8 @@ export class Config {
     delete (key: string): void {
         this.assertWritable(key)
         const td    = this.docs[this.target]
+        if (td.doc.contents === null || td.doc.contents === undefined)
+            return
         const next  = td.doc.clone()
         next.deleteIn(this.resolveKey(key).split("."))
         const saved = td.doc
