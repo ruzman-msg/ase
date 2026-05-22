@@ -5,7 +5,9 @@ ChangeLog
 0.0.38 (2026-05-22)
 -------------------
 
+- IMPROVEMENT: reduce verbose LLM output in `ase-meta-evaluate` skill
 - BUGFIX: automatically choose "sudo" for "npm install -g" commands when necessary in "ase setup"
+- BUGFIX: also set ase-task-id in `ase-code-resolve` skill
 
 0.0.37 (2026-05-21)
 -------------------
