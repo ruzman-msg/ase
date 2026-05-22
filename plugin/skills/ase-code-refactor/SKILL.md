@@ -74,7 +74,7 @@ permitted way to persist artifacts is via `task_save(...)`.
         <request><text/></request> and <ase-task-id><id/></ase-task-id>
         and call the `task_id(id: <ase-task-id/>, session:
         <ase-session-id/>)` tool from the `ase` MCP service to
-        implicitly switch the task.
+        implicitly switch the task. Do not output anything.
 
     3.  If <request/> is empty,
         ask the user interactively, without a special tool, for the
@@ -92,7 +92,7 @@ permitted way to persist artifacts is via `task_save(...)`.
         which consists of two lower-case words concatenated with a
         `-` character. Then call the `task_id(id: <ase-task-id/>,
         session: <ase-session-id/>)` tool from the `ase` MCP service to
-        implicitly switch the task.
+        implicitly switch the task. Do not output anything.
         </if>
 
     5.  Report the task and request with the following <template/>:
@@ -121,20 +121,34 @@ permitted way to persist artifacts is via `task_save(...)`.
 
 3.  **Find Refactoring Approaches**:
 
+    You *MUST* perform the following sub-steps *internally* and *without
+    any output* until and including the recommendation decision. Only
+    sub-step 4 below is allowed to produce output.
+
     1.  *Propose* corresponding *refactoring approach*, including
-        optionally, some *alternative* refactoring approaches.
+        optionally, some *alternative* refactoring approaches. Do *not*
+        output anything in this sub-step.
 
-    2.  Annotate the approach you recommend with an <annotation/> of
-        ` ⚝ **RECOMMENDATION** ⚝`.
+    2.  *Reflect* on and *critique* the proposed approaches by deriving,
+        per approach, a small set of concrete *pros* and *cons*. Do
+        *not* output anything in this sub-step.
 
-    3.  Report each approach with the following <template/>
-        and do not output anything else in this step:
+    3.  Based on the reflection, *decide* which approach to recommend
+        and annotate it with an <annotation/> of
+        ` ⚝ **RECOMMENDATION** ⚝`. All other approaches receive an
+        empty <annotation/>. Do *not* output anything in this sub-step.
+
+    4.  *Now* report each approach with the following <template/>,
+        inlining its pros/cons derived in sub-step 2, and do not output
+        anything else in this step:
 
         <template>
         &#x1F535; **APPROACH A<n/>**<annotation/>: *<summary/>*
-        - [...]
-        - [...]
-        - [...]
+        ● [...]
+        ● [...]
+        ● [...]
+        ⊕ *pro*: [...]
+        ⊖ *con*: [...]
         <optional-diagram/>
         </template>
 
@@ -142,7 +156,7 @@ permitted way to persist artifacts is via `task_save(...)`.
 
         -   Give a short one-sentence <summary/> of the refactoring approach plus
             *precise* and *brief* refactoring information. Try to keep the
-            number of bullet points in the range of 1-4.
+            number of bullet points (●) in the range of 1-4.
 
         -   In case of a *complex refactoring situation* only, visualize it with
             an optional diagram <optional-diagram/> by invoking the
@@ -185,11 +199,12 @@ permitted way to persist artifacts is via `task_save(...)`.
     1.  If <getopt-option-auto/> is equal `false`:
         Let the *user interactively choose* the preferred refactoring
         approach A<n/> with the help of the <user-dialog-tool/> tool.
-        Use the header `Select Approach` and *single-selection* only
-        and provide small *code change previews*. Mark your recommended
-        refactoring approach with ` ⚝ **RECOMMENDATION** ⚝` here again.
-        Except for the interactive selection, do not output anything in
-        this step.
+        Use the header `Select Approach`, use `A<n/>: <short-summary/>`
+        for the option (where <short-summary/> is an ultra brief summary
+        of the approach A<n/>), and *single-selection* only and provide
+        small *code change previews*. Mark your recommended refactoring
+        approach with ` ⚝ **RECOMMENDATION** ⚝` here again. Except for
+        the interactive selection, do not output anything in this step.
 
     2.  If <getopt-option-auto/> is equal `true`:
         Set <n/> to the number of the refactoring approach A<n/> you recommend.

@@ -86,7 +86,7 @@ permitted way to persist artifacts is via `task_save(...)`.
         <problem><text/></problem> and <ase-task-id><id/></ase-task-id>
         and call the `task_id(id: <ase-task-id/>, session:
         <ase-session-id/>)` tool from the `ase` MCP service to
-        implicitly switch the task.
+        implicitly switch the task. Do not output anything.
 
     4.  If <problem/> is empty,
         ask the user interactively, without a special tool, for the
@@ -104,7 +104,7 @@ permitted way to persist artifacts is via `task_save(...)`.
         which consists of two lower-case words concatenated with a
         `-` character. Then call the `task_id(id: <ase-task-id/>,
         session: <ase-session-id/>)` tool from the `ase` MCP service to
-        implicitly switch the task.
+        implicitly switch the task. Do not output anything.
         </if>
 
     6.  Report the task and problem with the following <template/>:
@@ -130,9 +130,9 @@ permitted way to persist artifacts is via `task_save(...)`.
         <optional-diagram/>
 
         &#x1F7E0; **PROBLEM DETAILS**: *<summary/>*
-        - [...]
-        - [...]
-        - [...]
+        ● [...]
+        ● [...]
+        ● [...]
         </template>
 
         Hints:
@@ -142,7 +142,7 @@ permitted way to persist artifacts is via `task_save(...)`.
 
         - Give a short one-sentence <summary/> of the <problem/> plus *precise*
           but *brief* code processing information to understand the problem.
-          Try to keep the number of bullet points in the range of 1-4.
+          Try to keep the number of bullet points (●) in the range of 1-4.
 
         - In case of a *complex context situation* with complex *structure*
           (layout, components, dependencies, etc), complex *control flow*
@@ -165,20 +165,34 @@ permitted way to persist artifacts is via `task_save(...)`.
 
 3.  **Find Problem Resolution Approaches**:
 
+    You *MUST* perform the following sub-steps *internally* and *without
+    any output* until and including the recommendation decision. Only
+    sub-step 4 below is allowed to produce output.
+
     1.  *Propose* corresponding *resolution approach*, including optionally,
-        some *alternative* resolution approaches.
+        some *alternative* resolution approaches. Do *not* output anything
+        in this sub-step.
 
-    2.  Annotate the approach you recommend with an <annotation/> of
-        ` ⚝ **RECOMMENDATION** ⚝`.
+    2.  *Reflect* on and *critique* the proposed approaches by deriving,
+        per approach, a small set of concrete *pros* and *cons*. Do
+        *not* output anything in this sub-step.
 
-    3.  Report each approach with the following <template/>
-        and do not output anything else in this step:
+    3.  Based on the reflection, *decide* which approach to recommend
+        and annotate it with an <annotation/> of
+        ` ⚝ **RECOMMENDATION** ⚝`. All other approaches receive an
+        empty <annotation/>. Do *not* output anything in this sub-step.
+
+    4.  *Now* report each approach with the following <template/>,
+        inlining its pros/cons derived in sub-step 2, and do not output
+        anything else in this step:
 
         <template>
         &#x1F535; **APPROACH A<n/>**<annotation/>: *<summary/>*
-        - [...]
-        - [...]
-        - [...]
+        ● [...]
+        ● [...]
+        ● [...]
+        ⊕ *pro*: [...]
+        ⊖ *con*: [...]
         <optional-diagram/>
         </template>
 
@@ -186,7 +200,7 @@ permitted way to persist artifacts is via `task_save(...)`.
 
         -   Give a short one-sentence <summary/> of the resolution approach plus
             *precise* and *brief* resolution information. Try to keep the
-            number of bullet points in the range of 1-4.
+            number of bullet points (●) in the range of 1-4.
 
         -   Focus on resolution approaches for *practically relevant* cases and do *not*
             investigate on theoretical or fictive cases. This is especially the case
@@ -238,9 +252,11 @@ permitted way to persist artifacts is via `task_save(...)`.
     1.  If <getopt-option-auto/> is equal `false`:
         Let the *user interactively choose* the preferred resolution
         approach A<n/> with the help of the <user-dialog-tool/> tool.
-        Use the header `Select Approach` and *single-selection* only
-        and provide small *code change previews*. Mark your recommended
-        resolution approach with ` ⚝ **RECOMMENDATION** ⚝` here again.
+        Use the header `Select Approach`, use `A<n/>: <short-summary/>`
+        for the option (where <short-summary/> is an ultra brief summary
+        of the approach A<n/>), and *single-selection* only and provide
+        small *code change previews*. Mark your recommended resolution
+        approach with ` ⚝ **RECOMMENDATION** ⚝` here again.
 
     2.  If <getopt-option-auto/> is equal `true`:
         Set <n/> to the number of the resolution approach A<n/> you recommend.
