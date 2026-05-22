@@ -190,14 +190,18 @@ permitted way to persist artifacts is via `task_save(...)`.
             *precise* and *brief* refactoring information. Try to keep the
             number of bullet points (●) in the range of 1-4.
 
-        -   In case of a *complex refactoring situation* only, visualize it with
-            an optional diagram <optional-diagram/> by invoking the
-            `ase-meta-diagram` skill via the `Skill` tool. For *current vs.
-            proposed* comparisons, render each side as a *separate*
-            `ase-meta-diagram` invocation and stack the rendered blocks
-            *vertically* (labels `**Before:**` / `**After:**`); never
-            side-by-side. Omit <optional-diagram/> entirely for simple or
-            purely local situation.
+        -   In case of a *complex refactoring situation* only,
+            visualize it with an optional diagram <optional-diagram/>
+            by building a Mermaid specification <mermaid-spec/>
+            (e.g. `flowchart TB`, `stateDiagram-v2`, `sequenceDiagram`,
+            `classDiagram`, or `erDiagram`, depending on intent) and
+            invoking the `ase-meta-diagram` skill by calling the tool
+            `Skill(skill: "ase:ase-meta-diagram", args: <mermaid-spec/>)`.
+            For *current vs. proposed* comparisons, render each side as
+            a *separate* `ase-meta-diagram` invocation and stack the
+            rendered blocks *vertically* (labels `**Before:**` /
+            `**After:**`); never side-by-side. Omit <optional-diagram/>
+            entirely for simple or purely local situation.
 
 5.  **Choose Refactoring Approach**:
 

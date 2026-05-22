@@ -149,10 +149,11 @@ explicitly requested by this procedure via outputs based on a <template/>!
             </template>
 
         -   If <result/> is `DELETE`:
-            Only output the following <template/> and then use the
-            `Skill` tool to invoke the `ase:ase-task-delete` skill in
-            order to *delete* the updated plan. Immediately stop
-            processing the current skill once the `Skill` tool was used.
+            Only output the following <template/> and then call the
+            tool `Skill(skill: "ase:ase-task-delete")` to invoke the
+            `ase:ase-task-delete` skill in order to *delete* the updated
+            plan. Immediately stop processing the current skill once the
+            `Skill` tool was used.
 
             <template>
             ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **plan implemented -- hand-off to delete task**

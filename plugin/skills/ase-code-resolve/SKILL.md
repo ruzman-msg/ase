@@ -150,7 +150,11 @@ permitted way to persist artifacts is via `task_save(...)`.
           transitions, etc), complex *data flow* (actors, messages, etc), or
           complex *data structure* (classes, entities, relationships, etc),
           visualize it with an optional diagram <optional-diagram/> by
-          invoking the `ase-meta-diagram` skill via the `Skill` tool. Omit
+          building a Mermaid specification <mermaid-spec/> (e.g. `flowchart
+          TB`, `stateDiagram-v2`, `sequenceDiagram`, `classDiagram`, or
+          `erDiagram`, depending on intent) and invoking the
+          `ase-meta-diagram` skill by calling the tool `Skill(skill:
+          "ase:ase-meta-diagram", args: <mermaid-spec/>)`. Omit
           <optional-diagram/> entirely for simple or purely local situation.
 
 2.  **Investigate Code Base**:
@@ -243,14 +247,18 @@ permitted way to persist artifacts is via `task_save(...)`.
             or unexpected* errors, they *should* be handled in parent scopes to
             avoid cluttering the source code with too much error handling at all.
 
-        -   In case of a *complex resolution situation* only, visualize it with
-            an optional diagram <optional-diagram/> by invoking the
-            `ase-meta-diagram` skill via the `Skill` tool. For *current vs.
-            proposed* comparisons, render each side as a *separate*
-            `ase-meta-diagram` invocation and stack the rendered blocks
-            *vertically* (labels `**Before:**` / `**After:**`); never
-            side-by-side. Omit <optional-diagram/> entirely for simple or
-            purely local situation.
+        -   In case of a *complex resolution situation* only,
+            visualize it with an optional diagram <optional-diagram/>
+            by building a Mermaid specification <mermaid-spec/>
+            (e.g. `flowchart TB`, `stateDiagram-v2`, `sequenceDiagram`,
+            `classDiagram`, or `erDiagram`, depending on intent) and
+            invoking the `ase-meta-diagram` skill by calling the tool
+            `Skill(skill: "ase:ase-meta-diagram", args: <mermaid-spec/>)`.
+            For *current vs. proposed* comparisons, render each side as
+            a *separate* `ase-meta-diagram` invocation and stack the
+            rendered blocks *vertically* (labels `**Before:**` /
+            `**After:**`); never side-by-side. Omit <optional-diagram/>
+            entirely for simple or purely local situation.
 
 5.  **Choose Problem Resolution Approach**:
 

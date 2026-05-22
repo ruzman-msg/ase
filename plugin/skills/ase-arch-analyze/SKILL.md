@@ -302,11 +302,13 @@ interface quality, quality attributes, and architecture governance.
     - For <style/>, name the detected architecture style or
       "*undeclared*" if none is documented.
 
-    - For <rendered-diagram-as-fenced-code-block/>, emit *Mermaid*
-      source for a `flowchart TB` of the high-level component or
-      layer structure and invoke the `ase-meta-diagram` skill via the
-      `Skill` tool to render it. Show layers / slices / major
-      components and their dependency direction.
+    - For <rendered-diagram-as-fenced-code-block/>, build a Mermaid
+      specification <mermaid-spec/> for a `flowchart TB` of the
+      high-level component or layer structure and invoke the
+      `ase-meta-diagram` skill by calling the tool `Skill(skill:
+      "ase:ase-meta-diagram", args: <mermaid-spec/>)` to render it.
+      Show layers / slices / major components and their dependency
+      direction.
 
     - Mark detected *anomalies* directly in the Mermaid source.
       Because `!` and `?` are Mermaid special characters, *always

@@ -172,20 +172,22 @@ explicitly requested by this procedure via outputs based on a <template/>!
             </template>
 
         -   If <result/> is `EDIT`:
-            Only output the following <template/> and then use the
-            `Skill` tool to invoke the `ase:ase-task-edit` skill
-            in order to *edit* the updated plan. Immediately stop
-            processing the current skill once the `Skill` tool was used.
+            Only output the following <template/> and then call the
+            tool `Skill(skill: "ase:ase-task-edit")` to invoke the
+            `ase:ase-task-edit` skill in order to *edit* the updated
+            plan. Immediately stop processing the current skill once the
+            `Skill` tool was used.
 
             <template>
             ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **plan updated -- hand-off to edit**
             </template>
 
         -   If <result/> is `IMPLEMENT`:
-            Only output the following <template/> and then use the
-            `Skill` tool to invoke the `ase:ase-task-implement` skill
-            in order to *implement* the updated plan. Immediately stop
-            processing the current skill once the `Skill` tool was used.
+            Only output the following <template/> and then call the
+            tool `Skill(skill: "ase:ase-task-implement")` to invoke the
+            `ase:ase-task-implement` skill in order to *implement* the
+            updated plan. Immediately stop processing the current skill
+            once the `Skill` tool was used.
 
             <template>
             ⧉ **ASE**: ◉ task: **<ase-task-id/>**, ✪ plan: **<words/>** words, ▶ status: **plan updated -- hand-off to implement**

@@ -72,10 +72,12 @@ code and *explain* it in *brief*, *standardized*, and *concise* way.
     Second, draw a diagram to show the control or data flow, code or
     data structure, or code or data relationships. What gives the best
     overall overview of the code?
-    Choose the Mermaid diagram type per intent: `classDiagram` for
-    class/method structure, `sequenceDiagram` for actor/message flow,
-    or `flowchart TB` for boxes-and-lines component layouts.
-    Invoke the `ase-meta-diagram` skill via the `Skill` tool to render the
+    Build a Mermaid specification <mermaid-spec/>, choosing the Mermaid
+    diagram type per intent: `classDiagram` for class/method structure,
+    `sequenceDiagram` for actor/message flow, or `flowchart TB` for
+    boxes-and-lines component layouts. Then invoke the
+    `ase-meta-diagram` skill by calling the tool `Skill(skill:
+    "ase:ase-meta-diagram", args: <mermaid-spec/>)` to render the
     diagram. Do *not* hand-draw.
 
     Keep your explanation *brief* and *concise*.
