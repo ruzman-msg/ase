@@ -34,16 +34,15 @@ Development*.
 > Code*](https://code.claude.com) The secondary focus is on the support
 > for [*GitHub Copilot CLI*](https://github.com/features/copilot/cli)
 > (just set environment variable `ASE_TOOL=copilot`). In the future,
-> a additional support could be provided also for alternative tools
+> additional support could be provided also for alternative tools
 > &mdash; if their agent harness features (especially hooks, interactive
 > user dialog tool, etc) realistically allow it.
 
 > [!CAUTION]
-> **ASE** is still under active initial development, still somewhat
-> incomplete, and hence not officially ready for production
-> use. On the other hand, all existing functionality is already
-> stable and used by us on a daily basis. So, if you are not a
-> steadfast early adopter, perhaps better visit this project
+> **ASE** is still under active initial development and still
+> somewhat incomplete. All existing functionality is already
+> stable and used on a daily basis in production. If you are not
+> a steadfast early adopter, perhaps better visit this project
 > again, once we reached at least version 0.9.x! Otherwise, feel
 > free to to join us on our journey towards [*Agentic Software
 > Engineering*](docs/agentic-software-engineering.md).
