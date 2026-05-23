@@ -32,11 +32,10 @@ Development*.
 > [!NOTE]
 > The primary focus of **ASE** is on the Agentic AI Coding tool *Claude
 > Code*. The secondary focus is on the support for *GitHub Copilot CLI*
-> (just set environment variable `ASE_TOOL=copilot`). In the future, a
-> additional support could be provided also for alternative tools like
-> *OpenAI Codex* or *OpenCode* &mdash; if their agent harness features
-> (especially hooks, interactive user dialog tool, etc) realistically
-> allow it.
+> (just set environment variable `ASE_TOOL=copilot`). In the future,
+> a additional support could be provided also for alternative tools
+> &mdash; if their agent harness features (especially hooks, interactive
+> user dialog tool, etc) realistically allow it.
 
 > [!CAUTION]
 > **ASE** is still under active development, still somewhat incomplete,
