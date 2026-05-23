@@ -5,6 +5,8 @@ ChangeLog
 0.0.44 (2026-05-23)
 -------------------
 
+- IMPROVEMENT: further improve persona style in `ase-persona.md`
+
 0.0.43 (2026-05-23)
 -------------------
 
