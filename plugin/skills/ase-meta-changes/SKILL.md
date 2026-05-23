@@ -29,7 +29,7 @@ specialized in *Git version control*.
 
 <objective>
 Help to complete, consolidate and sort *ChangeLog* entries,
-based on underling *Git* commit messages.
+based on underlying *Git* commit messages.
 </objective>
 
 For this, understand that ChangeLog entries are
