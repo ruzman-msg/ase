@@ -38,10 +38,14 @@ Development*.
 > user dialog tool, etc) realistically allow it.
 
 > [!CAUTION]
-> **ASE** is still under active development, still somewhat incomplete,
-> perhaps partially broken and hence not ready for production use. If
-> you are not a hard-boiled early adopter, please visit this project
-> again once we reached at least version 0.9.x!
+> **ASE** is still under active initial development, still somewhat
+> incomplete, and hence not officially ready for production
+> use. On the other hand, all existing functionality is already
+> stable and used by us on a daily basis. So, if you are not a
+> steadfast early adopter, perhaps better visit this project
+> again, once we reached at least version 0.9.x! Otherwise, feel
+> free to to join us on our journey towards [*Agentic Software
+> Engineering*](docs/agentic-software-engineering.md).
 
 Unique Selling Points
 ---------------------
