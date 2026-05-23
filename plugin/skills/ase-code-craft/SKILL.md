@@ -203,10 +203,10 @@ permitted way to persist artifacts is via `task_save(...)`.
         inlining its pros/cons derived in sub-step 2:
 
         <template>
-        ⚑ **APPROACH A<n/>**<annotation/>: *<summary/>*
-        ● [...]
-        ● [...]
-        ● [...]
+        ● **APPROACH A<n/>**<annotation/>: *<summary/>*
+        ○ [...]
+        ○ [...]
+        ○ [...]
         ⊕ *pro*: [...]
         ⊖ *con*: [...]
         <optional-diagram/>

@@ -38,22 +38,18 @@ code, for problems in its *logic* and *semantics* and its related
     you *MUST* use the `Agent` tool (not inline work) to create multiple
     sub-agents to split the investigation task into appropriate chunks.
 
-    Hints:
+    Tenets:
 
-    -   During investigation in this STEP 1, do *not* output anything else,
+    -   **Quiet Operation**:
+        During investigation in this STEP 1, do *not* output anything else,
         especially do not give any further explanations or information.
 
-    -   Focus on *practically relevant* cases and especially do *not*
+    -   **Practical Relevance Only**:
+        Focus on *practically relevant* cases and especially do *not*
         investigate on theoretical or fictive cases.
 
-    -   In case of problems related to *obvious or expected* errors,
-        they *should* be handled *near the origin*.
-
-    -   In case of problems related to *theoretical or unexpected* errors,
-        they *should* be handled in parent scopes to avoid cluttering the
-        source code with too much error handling at all.
-
-    -   In this STEP 1, still focus on the *problem only* and do *not*
+    -   **Problem Focus Only**:
+        Still focus on the *problem only* and do *not* already
         investigate on any possible *solution*.
     </step>
 
@@ -75,8 +71,8 @@ code, for problems in its *logic* and *semantics* and its related
 
     -   Uniquely identify the problems with `P<n/>` where <n/> is 1, 2, ...
 
-    -   In <description/>, use *very brief* but as *precise* as possible problem
-        descriptions.
+    -   In <description/>, use *ultra brief* but still as *precise* as
+        possible problem descriptions.
 
     -   In <description/>, highlight *code* as <template>`<code/>`</template>
         and *key aspects* as <template>*<aspect/>*</template>.
