@@ -46,11 +46,11 @@ code, for problems in its *logic* and *semantics* and its related
 
     -   **Practical Relevance Only**:
         Focus on *practically relevant* cases and especially do *not*
-        investigate on theoretical or fictive cases.
+        investigate theoretical or fictive cases.
 
     -   **Problem Focus Only**:
         Still focus on the *problem only* and do *not* already
-        investigate on any possible *solution*.
+        investigate any possible *solution*.
     </step>
 
 2.  <step id="STEP 2: Show Results">

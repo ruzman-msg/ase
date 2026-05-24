@@ -248,9 +248,9 @@ interface quality, quality attributes, and architecture governance.
       especially do not give any further explanations or information.
 
     - Focus on *practically relevant* problems and especially do
-      *not* investigate on theoretical or fictive cases.
+      *not* investigate theoretical or fictive cases.
 
-    - Focus on the *problem only* and do *not* investigate on any
+    - Focus on the *problem only* and do *not* investigate any
       possible *solution*.
 
     - For the *target programming language*, apply each aspect

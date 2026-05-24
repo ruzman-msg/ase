@@ -33,7 +33,7 @@ code and *explain* it in a *brief*, *standardized*, and *concise* way.
 <flow>
 
 1.  <step id="STEP 1: Investigate Code Base">
-    Investigate on the code. If the code base is large, you *MUST* use
+    Investigate the code. If the code base is large, you *MUST* use
     the `Agent` tool (not inline work) to create multiple sub-agents to
     split the investigation task into appropriate chunks.
     </step>
