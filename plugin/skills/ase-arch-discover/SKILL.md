@@ -9,6 +9,7 @@ disable-model-invocation: false
 effort: medium
 allowed-tools:
     - "Bash(npm search --json *)"
+    - "Bash(curl -s https://search.maven.org/*)"
     - "Skill"
     - "Agent"
 ---
@@ -114,9 +115,19 @@ for the technology stack to *provide* the *needed functionality*
 
         -   Based on the essential keywords <keyword-L/> (L=1-M),
             use the `ase-meta-search` skill in a subagent to *generally*
-            discover an initial set of a maximum of 12 *Java packages*
+            discover an initial set of a maximum of 12 *Maven packages*
             <component-K/> and at least their real name <name-K/> and
-            their unique package names <package-K/>.
+            their unique Maven coordinates <package-K/> of the form
+            `groupId:artifactId`.
+
+        -   Use the shell command `curl -s 'https://search.maven.org/solrsearch/select?q=<keyword-1/>+<keyword-M/>&rows=12&wt=json'`
+            to *specifically* discover an additional set of a maximum
+            of 12 *Maven packages* <component-K/> and at least their
+            unique Maven coordinates <package-K/> (i.e. `<g/>:<a/>` from
+            each result document's `g` and `a` fields), based on the
+            essential keywords <keyword-L/> (L=1-M). Merge the results
+            into the already existing result set, but deduplicate
+            entries by Maven coordinate.
 
     -   Call the `component_info(stack: <stack/>, components:
         [ <package-1/>, ..., <package-N/> ])` tool of the `ase` MCP
