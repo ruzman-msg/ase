@@ -63,13 +63,13 @@ see whether **ASE** is right for you:
   &rarr; `/ase-meta-persona engineer` or even `/ase-meta-persona caveman`
 
 - **Alternative Approach Funnel**:
-  You prefer a plan-driven approach, but the agent harness'
-  Plan Mode is too unstructured and too direct, because you want to
+  You prefer a plan-driven approach, but the agent harness's
+  Plan Mode is too unstructured and too direct because you want to
   leverage from a funnel of alternative approaches first?
   &rarr; `/ase-code-craft hello: "ase hello" CLI command which prints a nice "Hello World" in red`
 
 - **Named and Persisted Plans**:
-  You prefer a plan-driven approach, but the agent harness' Plan Mode is
+  You prefer a plan-driven approach, but the agent harness's Plan Mode is
   regularly too weak, because you want named, persisted, cross-session
   reachable, and strictly structured plans?
   &rarr; `/ase-task-edit hello`
@@ -77,7 +77,7 @@ see whether **ASE** is right for you:
 - **Implementation Preflights**:
   You prefer a plan-driven approach, but want to pre-flight the
   implementation without later having to rewind artifacts via the version
-  control system or the agent harness' session history?
+  control system or the agent harness's session history?
   &rarr; `/ase-task-preflight hello`
 
 - **Project Insights**:
@@ -250,14 +250,14 @@ Design Decisions
 - **Recurring Software Engineering Tasks**:
   **ASE** targets the most important, recurring tasks in industrial
   Software Engineering only. Especially, **ASE** is not targeting
-  Consulting or Operations business.
+  the Consulting or Operations business.
 
 </td>
 <td width="50%" valign="top">
 
 - **Human in the Loop**:
   **ASE** targets the scenario of a person performing Software
-  Engineering tasks. Especially, **ASE** is not intended for full
+  Engineering tasks. Especially, **ASE** is not intended for fully
   autonomous agent scenarios, even if its skills can be conveniently
   chained.
 
@@ -280,7 +280,7 @@ The following gives a short overview of the concepts and building blocks of **AS
 We can distinguish multiple levels of Agentic AI Coding. **ASE**
 focuses on the levels 1-3, i.e., it supports the assisted, agentic, and
 delegated modes of operation best. **ASE** is especially not intended
-for the full autonomous agent mode of operation.
+for the fully autonomous agent mode of operation.
 
 [![building-blocks](docs/agentic-levels.svg)](docs/agentic-levels.pdf)
 
