@@ -469,7 +469,7 @@ export default class StatuslineCommand {
                     S: () => {
                         const pct5h = data.rate_limits?.five_hour?.used_percentage
                         if (pct5h !== undefined)
-                            emit(`${prefix("⏲", "session")}${c.bold(`${pct5h.toFixed(1)}%`)}`)
+                            emit(`${prefix("⏲", "session-usage")}${c.bold(`${pct5h.toFixed(1)}%`)}`)
                     },
                     D: () => {
                         const until5h = data.rate_limits?.five_hour?.resets_at ?? ""
@@ -480,7 +480,7 @@ export default class StatuslineCommand {
                     W: () => {
                         const pctWk = data.rate_limits?.seven_day?.used_percentage
                         if (pctWk !== undefined)
-                            emit(`${prefix("⏲", "weekly")}${c.bold(`${pctWk.toFixed(1)}%`)}`)
+                            emit(`${prefix("⏲", "weekly-usage")}${c.bold(`${pctWk.toFixed(1)}%`)}`)
                     },
                     Q: () => {
                         const untilWk = data.rate_limits?.seven_day?.resets_at ?? ""
