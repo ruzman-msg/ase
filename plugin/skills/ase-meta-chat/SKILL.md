@@ -2,64 +2,48 @@
 name: ase-meta-chat
 argument-hint: "<llm> <query>"
 description: >
-    Query foreign LLM for Chat.
+    Query foreign LLM for chat.
     Use this skill if a foreign LLM like OpenAI ChatGPT, Google Gemini,
     DeepSeek or xAI Grok should be queried with a single chat message.
 user-invocable: true
 disable-model-invocation: false
-context: fork
 effort: low
 allowed-tools:
-    - "mcp__chat-openai-chatgpt"
-    - "mcp__chat-google-gemini"
-    - "mcp__chat-deepseek"
-    - "mcp__chat-xai-grok"
-    - "Task"
     - "Agent"
 ---
 
 @${CLAUDE_SKILL_DIR}/../../meta/ase-control.md
 @${CLAUDE_SKILL_DIR}/../../meta/ase-skill.md
 
-Query Foreign LLMs for Chat
-===========================
+Query Foreign LLM for Chat
+==========================
 
 <skill name="ase-meta-chat">
-Query Foreign LLMs for Chat
+Query Foreign LLM for Chat
 </skill>
 
+<role>
 Your role is to act as a proxy to query a foreign LLM for a single chat message.
+</role>
 
 <objective>
 Query foreign LLM for: <query>$ARGUMENTS</query>
 </objective>
 
-<flow>
+1.  You *MUST* *NOT* output anything in this step.
+    Just call the underlying agent with the following tool:
 
-1.  <step id="STEP 1: Select LLMs">
-    Use the *first word* of the following <query/> for selecting the
-    foreign LLMs to query, and their corresponding MCP servers, from the
-    following list:
+    ```text
+        Agent(
+            name:          "ase:ase-meta-chat",
+            description:   "Query Foreign LLM for Chat",
+            subagent_type: "ase:ase-meta-chat",
+            prompt:        <query/>
+        )
+    ```
 
-    - **OpenAI ChatGPT**: via MCP server `chat-openai-chatgpt`
-    - **Google Gemini**:  via MCP server `chat-google-gemini`
-    - **DeepSeek**:       via MCP server `chat-deepseek`
-    - **xAI Grok**:       via MCP server `chat-xai-grok`
-    </step>
-
-2.  <step id="STEP 2: Spawn Agents">
-    Spawn a *sub-task* with the companion `ase-meta-chat` *agent* (and
-    not this *skill*, but the agent of the same name) for the selected
-    foreign LLMs, and pass the *second and all remaining* words of the
-    following <query/> as the query for the selected LLM.
-    </step>
-
-3.  <step id="STEP 3: Return Responses">
-    Return the *plain response* of the `ase-meta-chat` agent 1:1 and
-    *without any modifications*. Especially, do *NOT* add or remove any
-    text from the agent response on your own and do not interpret the
-    result in any way.
-    </step>
-
-</flow>
+2.  Output the *plain response* of the `ase:ase-meta-chat` agent
+    *verbatim* and *without any modifications*. Especially, do *NOT* add or
+    remove any text from the agent response on your own and do not interpret
+    the result in any way.
 
