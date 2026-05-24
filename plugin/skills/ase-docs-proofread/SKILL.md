@@ -156,6 +156,7 @@ documents.
     | **SPELLING**:    | **<n/>** problems found |
     | **PUNCTUATION**: | **<m/>** problems found |
     | **GRAMMAR**:     | **<k/>** problems found |
+
     </template>
 
     Hints:
