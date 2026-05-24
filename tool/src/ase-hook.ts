@@ -239,6 +239,29 @@ export default class HookCommand {
     /*  handler for "ase hook stop" (both tools)  */
     private doStop (_tool: Tool): number {
         this.writeAgentStatus("ready")
+
+        /*  safety net: clear any lingering "agent.skill" marker so a
+            crashed or aborted skill loop does not leave information active  */
+        const stdin = fs.readFileSync(0, "utf8")
+        const input = stdin.trim() !== "" ? JSON.parse(stdin) as
+            { session_id?: string, sessionId?: string } : {}
+        const sessionId = input.session_id ?? input.sessionId ?? ""
+        if (/^[A-Za-z0-9._-]+$/.test(sessionId)) {
+            try {
+                const cfg = new Config("config", configSchema, this.log,
+                    parseScope(`session:${sessionId}`))
+                cfg.lock(() => {
+                    cfg.read()
+                    if (typeof cfg.get("agent.skill") === "string") {
+                        cfg.delete("agent.skill")
+                        cfg.write()
+                    }
+                })
+            }
+            catch (_e) {
+                /*  best-effort: ignore failures  */
+            }
+        }
         return 0
     }
 
@@ -266,13 +289,34 @@ export default class HookCommand {
         return 0
     }
 
+    /*  read the session-scoped "agent.skill" config value  */
+    private readActiveSkill (sessionId: string): string {
+        if (!/^[A-Za-z0-9._-]+$/.test(sessionId))
+            return ""
+        try {
+            const cfg = new Config("config", configSchema, this.log, parseScope(`session:${sessionId}`))
+            let val = ""
+            cfg.lock(() => {
+                cfg.read()
+                const v = cfg.get("agent.skill")
+                if (typeof v === "string")
+                    val = v
+            })
+            return val
+        }
+        catch (_e) {
+            return ""
+        }
+    }
+
     /*  handler for "ase hook pre-tool-use" (both tools)  */
     private doPreToolUse (tool: Tool): number {
         const spec = toolSpecs[tool]
 
         /*  read tool invocation information  */
         const stdin = fs.readFileSync(0, "utf8")
-        const input = stdin.trim() !== "" ? JSON.parse(stdin) as Record<string, unknown> : {}
+        const input = stdin.trim() !== "" ? JSON.parse(stdin) as Record<string, unknown> &
+            { session_id?: string, sessionId?: string } : {}
 
         /*  determine whether to auto-approve the tool invocation
             (field names and value shapes differ between tools)  */
@@ -303,6 +347,14 @@ export default class HookCommand {
         else if (spec.mcpToolNamePattern.test(toolName)) {
             approve = true
             reason  = "ASE MCP tool invocation auto-approved"
+        }
+        else if (toolName === "Edit") {
+            const sessionId   = input.session_id ?? input.sessionId ?? ""
+            const activeSkill = this.readActiveSkill(sessionId)
+            if (activeSkill === "ase-docs-proofread") {
+                approve = true
+                reason  = `${activeSkill}: user already consented via AskUserQuestion`
+            }
         }
 
         /*  emit permission decision (or stay silent to defer to default flow).
