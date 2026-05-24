@@ -5,6 +5,7 @@ ChangeLog
 0.0.50 (2026-05-25)
 -------------------
 
+- REFACTOR: move logic from "ase-meta-chat" skill to the corresponding agent
 - REFACTOR: convert "ase-meta-diagram" skill into a sub-agent and route all callers through the `Agent` tool
 
 0.0.49 (2026-05-24)
