@@ -2,7 +2,7 @@
 ChangeLog
 =========
 
-0.0.45 (2026-05-23)
+0.0.45 (2026-05-24)
 -------------------
 
 - IMPROVEMENT: add new "ase-docs-proofread" skill
