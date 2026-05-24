@@ -276,12 +276,16 @@ documents.
         </for>
 
     3.  After the iteration has finished, you *MUST* clear the auto-approve
-        gate via the call MCP tool call `config_delete(key:
-        "agent.skill", scope: "session:<ase-session-id/>")` of the `ase`
-        service.
+        gate via the MCP tool call `config_delete(key: "agent.skill",
+        scope: "session:<ase-session-id/>")` of the `ase` service.
 
     4.  You *MUST* *NOT* output any further additional explanations or
-        summaries at the end of this skill processing.
+        summaries at the end of this skill processing, except for the
+        following final <template/>:
+
+        <template>
+        &#x26AA; **PROOFREAD FINISHED**
+        </template>
 
     </step>
 
