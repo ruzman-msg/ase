@@ -55,6 +55,20 @@ const toolSpecs: Record<Tool, ToolSpec> = {
 export default class HookCommand {
     constructor (private log: Log) {}
 
+    /*  best-effort JSON parse: returns an empty object on blank input
+        or malformed JSON, so callers can treat the result uniformly  */
+    private parseJSON<T extends object> (text: string): T {
+        if (text.trim() === "")
+            return {} as T
+        try {
+            return JSON.parse(text) as T
+        }
+        catch (_e) {
+            /*  best-effort: return empty object on malformed JSON  */
+            return {} as T
+        }
+    }
+
     /*  recursively expand "@<path>" file references in a Markdown text,
         resolving paths relative to the directory of the containing file  */
     private expandReferences (text: string, baseDir: string, visited = new Set<string>()): string {
@@ -115,8 +129,7 @@ export default class HookCommand {
         /*  read session information (Claude Code uses snake_case fields,
             Copilot CLI uses camelCase fields)  */
         const stdin = fs.readFileSync(0, "utf8")
-        const input = stdin.trim() !== "" ? JSON.parse(stdin) as
-            { session_id?: string, sessionId?: string, cwd?: string } : {}
+        const input = this.parseJSON<{ session_id?: string, sessionId?: string, cwd?: string }>(stdin)
 
         /*  determine session id  */
         const sessionId = input.session_id ?? input.sessionId ?? ""
@@ -243,8 +256,7 @@ export default class HookCommand {
         /*  safety net: clear any lingering "agent.skill" marker so a
             crashed or aborted skill loop does not leave information active  */
         const stdin = fs.readFileSync(0, "utf8")
-        const input = stdin.trim() !== "" ? JSON.parse(stdin) as
-            { session_id?: string, sessionId?: string } : {}
+        const input = this.parseJSON<{ session_id?: string, sessionId?: string }>(stdin)
         const sessionId = input.session_id ?? input.sessionId ?? ""
         if (/^[A-Za-z0-9._-]+$/.test(sessionId)) {
             try {
@@ -270,8 +282,7 @@ export default class HookCommand {
         /*  read session information (Claude Code uses snake_case fields,
             Copilot CLI uses camelCase fields)  */
         const stdin = fs.readFileSync(0, "utf8")
-        const input = stdin.trim() !== "" ? JSON.parse(stdin) as
-            { session_id?: string, sessionId?: string } : {}
+        const input = this.parseJSON<{ session_id?: string, sessionId?: string }>(stdin)
 
         /*  determine session id  */
         const sessionId = input.session_id ?? input.sessionId ?? ""
@@ -315,8 +326,8 @@ export default class HookCommand {
 
         /*  read tool invocation information  */
         const stdin = fs.readFileSync(0, "utf8")
-        const input = stdin.trim() !== "" ? JSON.parse(stdin) as Record<string, unknown> &
-            { session_id?: string, sessionId?: string } : {}
+        const input = this.parseJSON<Record<string, unknown> &
+            { session_id?: string, sessionId?: string }>(stdin)
 
         /*  determine whether to auto-approve the tool invocation
             (field names and value shapes differ between tools)  */
@@ -324,14 +335,8 @@ export default class HookCommand {
             input[spec.toolNameField] as string : ""
         let toolInput: { command?: string, skill?: string } = {}
         const rawInput  = input[spec.toolInputField]
-        if (spec.toolInputIsString && typeof rawInput === "string") {
-            try {
-                toolInput = JSON.parse(rawInput) as { command?: string, skill?: string }
-            }
-            catch (_e) {
-                /*  best-effort: leave toolInput empty on parse failure  */
-            }
-        }
+        if (spec.toolInputIsString && typeof rawInput === "string")
+            toolInput = this.parseJSON<{ command?: string, skill?: string }>(rawInput)
         else if (!spec.toolInputIsString && typeof rawInput === "object" && rawInput !== null)
             toolInput = rawInput as { command?: string, skill?: string }
         let approve = false
