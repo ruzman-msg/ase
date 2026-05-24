@@ -121,7 +121,7 @@ multi-*criteria* decision matrix.
         important, over normal, to less important). Do not output anything.
 
     -   Ensure the final number of criteria is always within the range of
-        minimum 8 and maximum 12: if less than 8 criteria were requested,
+        minimum 8 and maximum 12: if fewer than 8 criteria were requested,
         use the set of alternatives to decide on additional criteria
         which potentially allow best to triage the alternatives, take the
         <reason/> into account, and use the `ase-meta-search` skill (drawing from
