@@ -41,7 +41,11 @@ export class GetoptMCP {
                 /*  normalize args  */
                 const argsRaw    = typeof args.args === "string" ? args.args : null
                 const argsVec    = typeof args.args === "string" ?
-                    shParse(args.args).filter((e): e is string => typeof e === "string") :
+                    shParse(args.args)
+                        .map((e) => typeof e === "string" ? e :
+                            (e !== null && typeof e === "object" && "op" in e && e.op === "glob" ?
+                                (e as { pattern: string }).pattern : null))
+                        .filter((e): e is string => e !== null) :
                     args.args
 
                 /*  build a fresh commander program  */
