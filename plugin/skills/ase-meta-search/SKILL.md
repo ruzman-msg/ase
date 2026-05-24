@@ -10,9 +10,7 @@ effort: low
 allowed-tools:
     - "mcp__perplexity__perplexity_search"
     - "mcp__brave__brave_web_search"
-    - "WebSearch"
-    - "WebFetch"
-    - "Task"
+    - "Agent"
 ---
 
 @${CLAUDE_SKILL_DIR}/../../meta/ase-control.md
@@ -25,7 +23,9 @@ Search the Internet/Web
 Search the Internet/Web
 </skill>
 
+<role>
 Your role is an expert-level *web specialist*.
+</role>
 
 <objective>
 Your objective is to *search* the *Internet*/*Web* for the following query:
@@ -33,20 +33,46 @@ Your objective is to *search* the *Internet*/*Web* for the following query:
 </objective>
 
 <flow>
-1.  <step id="STEP 1: QUERY SERVICES">
-    If the MCP tool `mcp__perplexity__perplexity_search` is available, send <query/> to it
-    via a first *sub-task* and our companion `ase-meta-search` *agent*.
 
-    If the MCP tool `mcp__brave__brave_web_search` is available, send <query/> to it
-    via a second *sub-task* and our companion `ase-meta-search` *agent*.
+1.  <step id="STEP 1: Query Search Services">
 
-    Send <query/> to the built-in tool `WebSearch`
-    via a third *sub-task* and our companion `ase-meta-search` *agent*.
+    <define name="agent">
+    ```text
+        Agent(
+            name:          "ase:ase-meta-search",
+            description:   "Query Web Search Service",
+            subagent_type: "ase:ase-meta-search",
+            prompt:        <content/>
+        )
+    ```
+    </define>
+
+    If the MCP tool `mcp__perplexity__perplexity_search` is available, call:
+    <expand name="agent">
+        Call the MCP tool `mcp__perplexity__perplexity_search(query: "<query/>")`
+    </expand>
+
+    If the MCP tool `mcp__brave__brave_web_search` is available, call:
+    <expand name="agent">
+        Call the MCP tool `mcp__brave__brave_web_search(query: "<query/>")`
+    </expand>
+
+    <expand name="agent">
+        Call the tool `WebSearch(query: "<query/>")`
+    </expand>
+
     </step>
 
-2.  <step id="STEP 2: CONSOLIDATE ANSWERS">
-    Consolidate all responses from the `ase-meta-search` *agents*
-    into a single response and output it without giving any further explanations.
+2.  <step id="STEP 2: Consolidate Search Answers">
+
+    Consolidate all responses from the `ase:ase-meta-search` agents
+    calls above into a single response and output it without giving any
+    further explanations.
+
+    For the consolidation, do *NOT* remove any orginal information,
+    just *MERGE* all overlapping information.
+
     </step>
+
 </flow>
 
