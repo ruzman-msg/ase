@@ -64,7 +64,7 @@ Give *insights* into the project through the source code of $ARGUMENTS.
     </step>
 
 3.  <step id="STEP 3: SOURCE CHURN">
-    Display the source files with caused the most churn by
+    Display the source files which caused the most churn by
     figuring out which source files have the most commits.
     Display the following <template/>:
 

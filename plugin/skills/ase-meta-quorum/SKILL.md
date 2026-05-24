@@ -83,7 +83,7 @@ by querying *multiple* AIs for an *optimal consensus*.
 
     If not all AIs agree, determine a <disagreement/> information,
     formatted as `(disagreement: <ai/>, <ai/>, [...])` where <ai/> is a
-    name of an AI which disagreed from the consensus. Else, if all AIs
+    name of an AI which disagreed with the consensus. Else, if all AIs
     agree, set <disagreement></disagreement>.
     </step>
 

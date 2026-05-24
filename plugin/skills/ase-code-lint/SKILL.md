@@ -87,7 +87,7 @@ related to a set of code quality aspects.
 2.  <step id="A01 - FORMATTING">
     <expand name="linter" arg1="A01 - FORMATTING">
     Check for inconsistently formatted code and badly vertically
-    aligned code on sub-sequent lines.
+    aligned code on subsequent lines.
 
     For vertical alignment, prefer to align on operators. For
     continuous code blocks (those without any blank lines at all),
@@ -187,7 +187,7 @@ related to a set of code quality aspects.
     <expand name="linter" arg1="A08 - COMPLICATENESS">
     Check for complicated or cumbersome code constructs.
 
-    Especially, check for unnecessary difficult code constructs
+    Especially, check for unnecessarily difficult code constructs
     for which simpler solutions exist.
     </expand>
     </step>
@@ -196,7 +196,7 @@ related to a set of code quality aspects.
     <expand name="linter" arg1="A09 - CONCISENESS">
     Check for non-concise and boilerplate-based code.
 
-    Especially, check for unnecessary long code constructs for
+    Especially, check for unnecessarily long code constructs for
     which shorter solutions exist, and check for unnecessary
     technical/infrastructural code with too few domain-specific
     aspects.

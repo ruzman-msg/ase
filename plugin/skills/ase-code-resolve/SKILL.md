@@ -119,7 +119,7 @@ permitted way to persist artifacts is via `task_save(...)`.
     8.  Ask the user for clarification if the goal of this resolution is
         too unclear.
 
-    9.  Do not output anything in this step, except you asked the user.
+    9.  Do not output anything in this step, unless you asked the user.
 
     10. Investigate and *figure out details* related to this problem.
         Report those details with the following <template/>:
@@ -189,7 +189,7 @@ permitted way to persist artifacts is via `task_save(...)`.
 
         -   **No Cleanups**:
             Strictly focus on resolving the problem and do not mix this
-            task with any other necessary code cleanups, except they are
+            task with any other necessary code cleanups, unless they are
             really necessary for resolving the task.
 
         -   **Minimum Flags**:
@@ -207,7 +207,7 @@ permitted way to persist artifacts is via `task_save(...)`.
             Problems for *obvious, particular, or expected* errors
             *should* be handled *near the origin*. Problems for
             *theoretical, fictive, or unexpected* errors, *should* be
-            handled more general and in parent scopes.
+            handled more generally and in parent scopes.
 
 4.  **Find Problem Resolution Approaches**:
 
