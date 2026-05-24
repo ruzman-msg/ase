@@ -552,6 +552,15 @@ export default class StatuslineCommand {
                 }
 
                 /*  walk each template line and render  */
+                const closeSpan = () => {
+                    if (span !== null) {
+                        const wrapped = span.color === "default" ?
+                            span.buf :
+                            (c[span.color as ForegroundColorName])(span.buf)
+                        span = null
+                        appendOutput(wrapped)
+                    }
+                }
                 for (const line of tmpl) {
                     let i = 0
                     while (i < line.length) {
@@ -560,15 +569,8 @@ export default class StatuslineCommand {
                         if (ch === "<") {
                             const m = line.slice(i).match(/^<(\/?)([a-z]+)>/)
                             if (m !== null && COLORS.has(m[2]!)) {
-                                if (m[1] === "/") {
-                                    if (span !== null) {
-                                        const wrapped = span.color === "default" ?
-                                            span.buf :
-                                            (c[span.color as ForegroundColorName])(span.buf)
-                                        span = null
-                                        appendOutput(wrapped)
-                                    }
-                                }
+                                if (m[1] === "/")
+                                    closeSpan()
                                 else if (span === null)
                                     span = { color: m[2]!, buf: "" }
                                 i += m[0].length
@@ -585,13 +587,7 @@ export default class StatuslineCommand {
                         }
                     }
                     /*  flush any unterminated span at end of line  */
-                    if (span !== null) {
-                        const wrapped = span.color === "default" ?
-                            span.buf :
-                            (c[span.color as ForegroundColorName])(span.buf)
-                        span = null
-                        appendOutput(wrapped)
-                    }
+                    closeSpan()
                     out += "\n"
                     col  = 0
                 }
