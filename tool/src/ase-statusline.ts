@@ -261,7 +261,7 @@ export default class StatuslineCommand {
     /*  parse and validate the --tool option  */
     private parseTool (value: string): Tool {
         if (value !== "claude" && value !== "copilot")
-            throw new Error(`invalid --tool value: "${value}" (expected "claude" or "copilot")`)
+            throw new InvalidArgumentError(`invalid --tool value: "${value}" (expected "claude" or "copilot")`)
         return value
     }
 
