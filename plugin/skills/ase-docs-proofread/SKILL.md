@@ -98,11 +98,9 @@ documents.
 
 3.  <step id="STEP 3: Correction">
 
-    1.  You *MUST* activate the auto-approve gate for the `Edit` tool
-        by setting the session-scoped `agent.skill` configuration value
-        to this skill's name via the MCP tool call `config_set(key:
-        "agent.skill", val: "ase-docs-proofread", scope:
-        "session:<ase-session-id/>")` of the `ase` service.
+    1.  You *MUST* call the MCP tool `config_set(key: "agent.skill", val:
+        "ase-docs-proofread", scope: "session:<ase-session-id/>")` of the
+        `ase` MCP server.
 
     2.  Iterate over all problems:
 
@@ -204,9 +202,8 @@ documents.
 
         </for>
 
-    3.  After the iteration has finished, you *MUST* clear the auto-approve
-        gate via the MCP tool call `config_delete(key: "agent.skill",
-        scope: "session:<ase-session-id/>")` of the `ase` service.
+    3.  You *MUST* call the MCP tool `config_delete(key: "agent.skill",
+        scope: "session:<ase-session-id/>")` of the `ase` MCP server.
 
     4.  You *MUST* *NOT* output any further additional explanations or
         summaries at the end of this skill processing, except for the
