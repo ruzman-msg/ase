@@ -11,6 +11,9 @@ import { fileURLToPath } from "node:url"
 import { Command }       from "commander"
 import { execa }         from "execa"
 import which             from "which"
+import * as dotenvx      from "@dotenvx/dotenvx"
+import Table             from "cli-table3"
+import chalk             from "chalk"
 
 import type Log          from "./ase-log.js"
 import Version           from "./ase-version.js"
@@ -27,6 +30,17 @@ type ToolSpec = {
 const toolSpecs: Record<Tool, ToolSpec> = {
     "claude":  { cli: "claude",  label: "Claude Code" },
     "copilot": { cli: "copilot", label: "Copilot CLI" }
+}
+
+/*  per-MCP dispatch table  */
+type mcpServerSpec = {
+    id:       string,
+    name:     string,
+    version?: string,
+    env:      string[],
+    server:   string,
+    skills:   string[],
+    handler:  (spec: mcpServerSpec, tool: Tool, action: "activate" | "deactivate", envKey: string, envVal: string) => Promise<void>
 }
 
 /*  CLI command "ase setup"  */
@@ -282,6 +296,435 @@ export default class SetupCommand {
         return 0
     }
 
+    /*  handler for "ase setup mcp list"  */
+    private async doMcpList (): Promise<number> {
+        const table = new Table({
+            head:      [ "ID", "NAME", "VERS", "MCP", "KEY", "SKILLS" ],
+            colWidths: [ 16, 16, 8, 21, 17, 20 ],
+            wordWrap:  true,
+            chars:     { "mid": "", "left-mid": "", "mid-mid": "", "right-mid": "" },
+            style:     { head: [ "blue" ] }
+        })
+        for (const handle of this.mcpServers)
+            table.push([
+                chalk.bold(handle.id),
+                handle.name,
+                handle.version ?? "(unknown)",
+                handle.server,
+                handle.env.join(", "),
+                handle.skills.join(", ")
+            ])
+        process.stdout.write(`${table.toString()}\n`)
+        return 0
+    }
+
+    /*  handler for "ase setup mcp activate|deactivate [<servers>]"  */
+    private async doMcp (action: "activate" | "deactivate", tool: Tool, servers: string): Promise<number> {
+        await this.ensureTool(toolSpecs[tool].cli)
+
+        /*  source .env files into the environment so the per-server
+            API keys (ASE_MCP_KEY_<XXX>) can live in a .env file instead
+            of the exported interactive shell environment  */
+        dotenvx.config({ quiet: true, ignore: [ "MISSING_ENV_FILE" ] })
+
+        /*  resolve the comma-separated list of server ids, with an empty
+            list or the literal "all" expanding to every registered server
+            id; track whether the ids were explicitly given on the CLI  */
+        const known = this.mcpServers.map((handle) => handle.id)
+        const explicit = servers.trim() !== "" && servers.trim() !== "all"
+        const ids = explicit ?
+            servers.split(",").map((s) => s.trim()).filter((s) => s !== "") : known
+        for (const id of ids)
+            if (this.mcpServers.find((handle) => handle.id === id) === undefined)
+                throw new Error(`unknown MCP server "${id}" ` +
+                    `(known: ${known.join(", ")})`)
+
+        /*  dispatch each selected server to its dedicated handler  */
+        for (const id of ids) {
+            /*  find handle  */
+            const handle = this.mcpServers.find((handle) => handle.id === id)!
+
+            /*  determine information and action  */
+            let envKey = ""
+            let envVal = ""
+            if (action === "activate") {
+                /*  on activation, require at least one of the per-server API
+                    key environment variables (ASE_MCP_KEY_<XXX>) to
+                    be set; skip the server when its id was only
+                    implicitly selected (empty list or "all"), but fail
+                    hard when it was given explicitly on the CLI  */
+                envKey = handle.env.find((name) =>
+                    (process.env[`ASE_MCP_KEY_${name}`] ?? "") !== "") ?? ""
+                if (envKey === "") {
+                    const vars = handle.env.map((name) => `ASE_MCP_KEY_${name}`).join(", ")
+                    if (explicit)
+                        throw new Error(`none of ${vars} set: ` +
+                            `cannot activate MCP server "${handle.server}"`)
+                    this.log.write("info", `setup: mcp: activate: [${id}]: none of ${vars} set: ` +
+                        `skipping MCP server "${handle.server}" (${handle.name})`)
+                    continue
+                }
+                envVal = process.env[`ASE_MCP_KEY_${envKey}`] ?? ""
+            }
+
+            /*  probe whether the MCP server is currently registered with the tool  */
+            const installed = await this.mcpInstalled(tool, handle.server)
+
+            if (action === "activate") {
+                /*  on activation, remove a stale registration first so the
+                    handler can re-create it cleanly  */
+                if (installed) {
+                    this.log.write("info", `setup: mcp: activate: [${id}]: MCP server "${handle.server}" ` +
+                        "already registered: removing stale registration first")
+                    await this.mcpRemove(tool, handle.server)
+                }
+            }
+            else if (!installed) {
+                /*  on deactivation, skip the removal of an absent server  */
+                this.log.write("info", `setup: mcp: deactivate: [${id}]: MCP server "${handle.server}" ` +
+                    "not registered: skipping removal")
+                continue
+            }
+
+            /*  call the handler  */
+            this.log.write("info", `setup: mcp: ${action}: [${id}]: MCP server "${handle.server}" ` +
+                `(name: ${handle.name}${handle.version ? (", version: " + handle.version) : ""})`)
+            await handle.handler(handle, tool, action, envKey, envVal)
+        }
+        return 0
+    }
+
+    /*  probe whether an MCP server is currently registered with the tool
+        by inspecting the exit code of "<cli> mcp get <name>"  */
+    private async mcpInstalled (tool: Tool, name: string): Promise<boolean> {
+        const result = await execa(toolSpecs[tool].cli, [ "mcp", "get", name ],
+            { stdio: "ignore", reject: false })
+        return result.exitCode === 0
+    }
+
+    /*  register an MCP server with the tool, supporting both the "stdio"
+        (a local subprocess command) and "http" (a remote URL, optionally
+        with HTTP headers) transports; the per-tool command line differs
+        between Claude Code and GitHub Copilot CLI  */
+    private async mcpAdd (tool: Tool, name: string, env: Record<string, string>, transport:
+        { type: "stdio", command: string[] } |
+        { type: "http",  url: string, headers?: Record<string, string> }): Promise<void> {
+        const args: string[] = [ "mcp", "add" ]
+        if (tool === "claude") {
+            args.push("--scope", "user")
+            args.push("--transport", transport.type)
+            if (transport.type === "stdio") {
+                for (const [ key, val ] of Object.entries(env))
+                    args.push("-e", `${key}=${val}`)
+                args.push("--", name, ...transport.command)
+            }
+            else {
+                for (const [ key, val ] of Object.entries(transport.headers ?? {}))
+                    args.push("--header", `${key}: ${val}`)
+                args.push(name, transport.url)
+            }
+        }
+        else {
+            /*  GitHub Copilot CLI implies the stdio transport when the
+                command is provided after "--"; only "http"/"sse" servers
+                need an explicit "--transport" flag and take the URL as a
+                positional argument  */
+            if (transport.type === "stdio") {
+                args.push(name)
+                for (const [ key, val ] of Object.entries(env))
+                    args.push("--env", `${key}=${val}`)
+                args.push("--", ...transport.command)
+            }
+            else {
+                args.push("--transport", "http")
+                for (const [ key, val ] of Object.entries(transport.headers ?? {}))
+                    args.push("--header", `${key}: ${val}`)
+                args.push(name, transport.url)
+            }
+        }
+        await this.run(toolSpecs[tool].cli, args)
+    }
+
+    /*  unregister an MCP server from the tool; the per-tool command line
+        differs between Claude Code and GitHub Copilot CLI  */
+    private async mcpRemove (tool: Tool, name: string): Promise<void> {
+        const args = tool === "claude" ?
+            [ "mcp", "remove", "--scope", "user", name ] :
+            [ "mcp", "remove", name ]
+        await this.run(toolSpecs[tool].cli, args,
+            { ignoreError: `MCP server "${name}" not registered` })
+    }
+
+    /*  registry of pre-defined MCP servers: maps each server id onto its
+        dedicated handler which performs the activate/deactivate operation  */
+    private mcpServers: mcpServerSpec[] = [
+        {
+            id:      "openai-chatgpt",
+            name:    "OpenAI ChatGPT",
+            version: "5.5",
+            env:     [ "OPENAI_CHATGPT", "OPENROUTER" ],
+            server:  "chat-openai-chatgpt",
+            skills:  [ "ase-meta-chat", "ase-meta-quorum" ],
+            handler: async (spec, tool, action, envKey, envVal) => {
+                if (action === "activate") {
+                    if (envKey === "OPENROUTER")
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://openrouter.ai/api/v1",
+                                "--openai-api",   "completion",
+                                "--openai-model", "openai/gpt-5.5"
+                            ]
+                        })
+                    else
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://api.openai.com/v1",
+                                "--openai-api",   "responses",
+                                "--openai-model", "gpt-5.5"
+                            ]
+                        })
+                }
+                else
+                    await this.mcpRemove(tool, spec.server)
+            }
+        },
+        {
+            id:      "google-gemini",
+            name:    "Google Gemini",
+            version: "3.5",
+            env:     [ "GOOGLE_GEMINI", "OPENROUTER" ],
+            server:  "chat-google-gemini",
+            skills:  [ "ase-meta-chat", "ase-meta-quorum" ],
+            handler: async (spec, tool, action, envKey, envVal) => {
+                if (action === "activate") {
+                    if (envKey === "OPENROUTER")
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://openrouter.ai/api/v1",
+                                "--openai-api",   "completion",
+                                "--openai-model", "google/gemini-3.5-flash"
+                            ]
+                        })
+                    else
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://generativelanguage.googleapis.com/v1beta/openai/",
+                                "--openai-api",   "completion",
+                                "--openai-model", "gemini-3.5-flash"
+                            ]
+                        })
+                }
+                else
+                    await this.mcpRemove(tool, spec.server)
+            }
+        },
+        {
+            id:      "deepseek",
+            name:    "DeepSeek",
+            version: "4.0",
+            env:     [ "DEEPSEEK", "OPENROUTER" ],
+            server:  "chat-deepseek",
+            skills:  [ "ase-meta-chat", "ase-meta-quorum" ],
+            handler: async (spec, tool, action, envKey, envVal) => {
+                if (action === "activate") {
+                    if (envKey === "OPENROUTER")
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio",
+                            command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://openrouter.ai/api/v1",
+                                "--openai-api",   "completion",
+                                "--openai-model", "deepseek/deepseek-v4-flash"
+                            ]
+                        })
+                    else
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://api.deepseek.com/v1",
+                                "--openai-api",   "completion",
+                                "--openai-model", "deepseek-v4-flash"
+                            ]
+                        })
+                }
+                else
+                    await this.mcpRemove(tool, spec.server)
+            }
+        },
+        {
+            id:      "xai-grok",
+            name:    "xAI Grok",
+            version: "4.3",
+            env:     [ "XAI_GROK", "OPENROUTER" ],
+            server:  "chat-xai-grok",
+            skills:  [ "ase-meta-chat", "ase-meta-quorum" ],
+            handler: async (spec, tool, action, envKey, envVal) => {
+                if (action === "activate") {
+                    if (envKey === "OPENROUTER")
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://openrouter.ai/api/v1",
+                                "--openai-api",   "completion",
+                                "--openai-model", "x-ai/grok-4.3"
+                            ]
+                        })
+                    else
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://api.x.ai/v1",
+                                "--openai-api",   "completion",
+                                "--openai-model", "grok-4.3"
+                            ]
+                        })
+                }
+                else
+                    await this.mcpRemove(tool, spec.server)
+            }
+        },
+        {
+            id:      "alibaba-qwen",
+            name:    "Alibaba Qwen",
+            version: "3.7",
+            env:     [ "ALIBABA_QWEN", "OPENROUTER" ],
+            server:  "chat-alibaba-qwen",
+            skills:  [ "ase-meta-chat", "ase-meta-quorum" ],
+            handler: async (spec, tool, action, envKey, envVal) => {
+                if (action === "activate") {
+                    if (envKey === "OPENROUTER")
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://openrouter.ai/api/v1",
+                                "--openai-api",   "completion",
+                                "--openai-model", "qwen/qwen3.7-max"
+                            ]
+                        })
+                    else
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://dashscope.aliyuncs.com/compatible-mode/v1",
+                                "--openai-api",   "completion",
+                                "--openai-model", "qwen3.7-max"
+                            ]
+                        })
+                }
+                else
+                    await this.mcpRemove(tool, spec.server)
+            }
+        },
+        {
+            id:      "zai-glm",
+            name:    "Z.AI GLM",
+            version: "5.1",
+            env:     [ "ZAI_GLM", "OPENROUTER" ],
+            server:  "chat-zai-glm",
+            skills:  [ "ase-meta-chat", "ase-meta-quorum" ],
+            handler: async (spec, tool, action, envKey, envVal) => {
+                if (action === "activate") {
+                    if (envKey === "OPENROUTER")
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://openrouter.ai/api/v1",
+                                "--openai-api",   "completion",
+                                "--openai-model", "z-ai/glm-5.1"
+                            ]
+                        })
+                    else
+                        await this.mcpAdd(tool, spec.server, { OPENAI_KEY: envVal }, {
+                            type: "stdio", command: [
+                                "npx", "-y", "mcp-to-openai",
+                                "--service",      spec.name,
+                                "--mcp-tool",     "query",
+                                "--openai-url",   "https://api.z.ai/api/paas/v4/",
+                                "--openai-api",   "completion",
+                                "--openai-model", "glm-5.1"
+                            ]
+                        })
+                }
+                else
+                    await this.mcpRemove(tool, spec.server)
+            }
+        },
+        {
+            id:      "brave",
+            name:    "Brave",
+            version: "latest",
+            env:     [ "BRAVE" ],
+            server:  "search-brave",
+            skills:  [ "ase-meta-search", "ase-meta-evaluate", "ase-arch-discover" ],
+            handler: async (spec, tool, action, _envKey, envVal) => {
+                if (action === "activate")
+                    await this.mcpAdd(tool, spec.server, {
+                        "BRAVE_API_KEY": envVal,
+                        "BRAVE_MCP_ENABLED_TOOLS": "brave_web_search"
+                    }, { type: "stdio", command: [ "npx", "-y", "@brave/brave-search-mcp-server" ] })
+                else
+                    await this.mcpRemove(tool, spec.server)
+            }
+        },
+        {
+            id:      "perplexity",
+            name:    "Perplexity",
+            version: "latest",
+            env:     [ "PERPLEXITY" ],
+            server:  "search-perplexity",
+            skills:  [ "ase-meta-search", "ase-meta-evaluate", "ase-arch-discover" ],
+            handler: async (spec, tool, action, _envKey, envVal) => {
+                if (action === "activate")
+                    await this.mcpAdd(tool, spec.server, {
+                        "PERPLEXITY_API_KEY": envVal
+                    }, { type: "stdio", command: [ "npx", "-y", "@perplexity-ai/mcp-server" ] })
+                else
+                    await this.mcpRemove(tool, spec.server)
+            }
+        },
+        {
+            id:      "exa",
+            name:    "Exa",
+            version: "latest",
+            env:     [ "EXA" ],
+            server:  "search-exa",
+            skills:  [ "ase-meta-search", "ase-meta-evaluate", "ase-arch-discover" ],
+            handler: async (spec, tool, action, _envKey, envVal) => {
+                if (action === "activate")
+                    await this.mcpAdd(tool, spec.server, {},
+                        { type: "http", url: `https://mcp.exa.ai/mcp?exaApiKey=${envVal}` })
+                else
+                    await this.mcpRemove(tool, spec.server)
+            }
+        }
+    ]
+
     /*  parse and validate the --tool option  */
     private parseTool (value: string): Tool {
         if (value !== "claude" && value !== "copilot")
@@ -355,6 +798,41 @@ export default class SetupCommand {
             .option("-t, --tool <tool>", "target tool (\"claude\" or \"copilot\")", toolDflt)
             .action(async (opts: { tool: string }) => {
                 process.exit(await this.doDisable(this.parseTool(opts.tool)))
+            })
+
+        /*  register CLI sub-command "ase setup mcp"  */
+        const mcpCmd = setupCmd
+            .command("mcp")
+            .description("activate or deactivate pre-defined MCP servers for a tool")
+            .action(() => {
+                mcpCmd.outputHelp()
+                process.exit(1)
+            })
+
+        /*  register CLI sub-command "ase setup mcp list"  */
+        mcpCmd
+            .command("list")
+            .description("list all available pre-defined MCP server names")
+            .action(async () => {
+                process.exit(await this.doMcpList())
+            })
+
+        /*  register CLI sub-command "ase setup mcp activate"  */
+        mcpCmd
+            .command("activate [servers]")
+            .description("activate pre-defined MCP servers (comma-separated list, or \"all\")")
+            .option("-t, --tool <tool>", "target tool (\"claude\" or \"copilot\")", toolDflt)
+            .action(async (servers: string | undefined, opts: { tool: string }) => {
+                process.exit(await this.doMcp("activate", this.parseTool(opts.tool), servers ?? "all"))
+            })
+
+        /*  register CLI sub-command "ase setup mcp deactivate"  */
+        mcpCmd
+            .command("deactivate [servers]")
+            .description("deactivate pre-defined MCP servers (comma-separated list, or \"all\")")
+            .option("-t, --tool <tool>", "target tool (\"claude\" or \"copilot\")", toolDflt)
+            .action(async (servers: string | undefined, opts: { tool: string }) => {
+                process.exit(await this.doMcp("deactivate", this.parseTool(opts.tool), servers ?? "all"))
             })
     }
 }

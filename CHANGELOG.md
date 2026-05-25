@@ -5,6 +5,8 @@ ChangeLog
 0.0.51 (2026-05-25)
 -------------------
 
+- IMPROVEMENT: add `ase setup mcp list|activate|deactivate` tool for managing foreign MCP servers
+
 0.0.50 (2026-05-25)
 -------------------
 
