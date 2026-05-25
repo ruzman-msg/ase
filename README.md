@@ -146,6 +146,11 @@ see whether **ASE** is right for you:
   methodological help of a weighted multi-criteria decision matrix?
   &rarr; `/ase-meta-evaluate Vue vs. React vs. Angular, focus on TypeScript support and extensibility`
 
+- **Convenient Foreign MCP Server Setup**:
+  You have API keys for popular AI chat services and/or Web search services
+  which ASE could *optionally* leverage in various skills?
+  &rarr; `ase setup mcp activate`
+
 </td>
 </tr>
 </table>
