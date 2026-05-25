@@ -8,6 +8,7 @@ ChangeLog
 - IMPROVEMENT: mark level in verbose outputs of STX build tasks
 - UPDATE: upgrade NPM dependencies
 - CLEANUP: clean up STX build tasks in `etc/stx.conf`
+- CLEANUP: clean up README.md
 
 0.0.51 (2026-05-25)
 -------------------
