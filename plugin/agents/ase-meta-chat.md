@@ -1,43 +1,54 @@
 ---
 name: ase-meta-chat
 description: "Query Foreign LLM for Chat via MCP Tool"
-effort: low
+effort: high
 tools:
-    - "mcp__chat-openai-chatgpt__chat-with-openai-chatgpt"
-    - "mcp__chat-google-gemini__chat-with-google-gemini"
-    - "mcp__chat-deepseek__chat-with-deepseek"
-    - "mcp__chat-xai-grok__chat-with-xai-grok"
+    - mcp__chat-openai-chatgpt__query
+    - mcp__chat-google-gemini__query
+    - mcp__chat-deepseek__query
+    - mcp__chat-xai-grok__query
+    - mcp__chat-zai-glm__query
+    - mcp__chat-alibaba-qwen__query
 ---
 
-1.  **Determine LLM and Query**:
+@../meta/ase-control.md
 
-    Set <llm>$ARGUMENTS[0]</llm>.
-    Set <query/> to the second and following tokens in `$ARGUMENTS`.
+1.  Treat `$ARGUMENTS` as a single whitespace-separated string.
+    Set <llm/> to the *first* token.
+    Set <query/> to the *second and all following* tokens.
     You *MUST* *NOT* output anything related to this step.
 
-2.  **Determine MCP Tool**:
+2.  Set <server></server> (set to empty).
 
-    Use the <llm/> to determine the corresponding MCP tool <tool/>, from
-    the following list of potentially available MCP tool:
+    <if condition="<llm/> is equal 'chatgpt'"> <server>chat-openai-chatgpt</server></if>
+    <if condition="<llm/> is equal 'gemini'">  <server>chat-google-gemini</server> </if>
+    <if condition="<llm/> is equal 'deepseek'"><server>chat-deepseek</server>      </if>
+    <if condition="<llm/> is equal 'grok'">    <server>chat-xai-grok</server>      </if>
+    <if condition="<llm/> is equal 'glm'">     <server>chat-zai-glm</server>       </if>
+    <if condition="<llm/> is equal 'qwen'">    <server>chat-alibaba-qwen</server>  </if>
 
-    - **OpenAI ChatGPT** (<llm/> `chatgpt`): MCP <tool/> `chat-with-openai-chatgpt`
-    - **Google Gemini** (<llm/> `gemini`):   MCP <tool/> `chat-with-google-gemini`
-    - **DeepSeek** (<llm/> `deepseek`):      MCP <tool/> `chat-with-deepseek`
-    - **xAI Grok** (<llm/> `grok`):          MCP <tool/> `chat-with-xai-grok`
+    <if condition="<server/> is empty">
+        You *MUST* output the following <template/> and immediately *STOP* processing
+        (do *NOT* continue with any further step and do *NOT* call any MCP tool):
 
-    You *MUST* *NOT* output anything related to this step, except if the
-    MCP tool <tool/> cannot be determined (because the corresponding
-    MCP server is not available or currently disabled), just output the
+        <template>
+        ERROR: unknown LLM `<llm/>` (has to be one of: chatgpt, gemini, deepseek, grok, glm, qwen)
+        </template>
+    </if>
+
+3.  Check whether the MCP server <server/> is available (because perhaps
+    it is currently disabled or not configured at all).
+
+    You *MUST* *NOT* output anything related to this step, except if
+    the MCP server <server/> is not available, then just output the
     following <template/> and immediately *STOP* processing:
 
     <template>
-    ERROR: LLM `<llm/>` required MCP tool `<tool/>`, but this is (currently) not available.
+    ERROR: LLM `<llm/>` requires MCP server `<server/>`, but it is (currently) not available!
     </template>
 
-3.  **Call MCP Tool**:
-
-    Else, call the MCP tool with `<tool/>(content: <query/>)` and
-    then return its result *verbatim* and *without any modifications*.
-    Especially, do *NOT* add or remove any text from the agent response
-    on your own and do not interpret the result in any way.
-
+4.  Now call the MCP tool `query(query: <query/>)` from the MCP server
+    <server/> and then return its result `text` *verbatim* and
+    *without any modifications*. Especially, do *NOT* add or remove
+    any text to the MCP server response on your own and do not
+    interpret the result in any way.
