@@ -14,7 +14,7 @@ About
 
 **Agentic Software Engineering (ASE)** is the opinionated companion
 tooling of *Dr. Ralf S. Engelschall* for combining the approach of
-*Agentic AI* with *Software Engineering* with the help of *Agentic
+*Agentic AI* and *Software Engineering* with the help of *Agentic
 AI Coding Tools* like *Claude Code*. **ASE** primarily consists of a
 *Claude Code* plugin and a Command-Line Interface (CLI) tool, including
 an *MCP* service. **ASE** provides skills and commands to support
@@ -68,7 +68,7 @@ see whether **ASE** is right for you:
 - **Alternative Approach Funnel**:
   You prefer a plan-driven approach, but the agent harness's
   Plan Mode is too unstructured and too direct because you want to
-  leverage from a funnel of alternative approaches first?
+  leverage a funnel of alternative approaches first?
   &rarr; `/ase-code-craft hello: "ase hello" CLI command which prints a nice "Hello World" in red`
 
 - **Named and Persisted Plans**:
@@ -239,7 +239,7 @@ The following AI services are currently defined:
 
 Hint: All MCP servers of type "Chat" support both the native API of the
 LLM vendor and the *OpenRouter* proxy API as an alternative, i.e. you
-can leverage from all paid "Chat" AI services by just providing the
+can leverage all paid "Chat" AI services by just providing the
 `ASE_MCP_KEY_OPENROUTER` of an *OpenRouter* account.
 
 Features
