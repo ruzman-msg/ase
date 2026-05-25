@@ -78,6 +78,8 @@ by querying *multiple* AIs for an *optimal consensus*.
     <expand name="agent" arg1="Google Gemini"  arg2="gemini"></expand>
     <expand name="agent" arg1="DeepSeek"       arg2="deepseek"></expand>
     <expand name="agent" arg1="xAI Grok"       arg2="grok"></expand>
+    <expand name="agent" arg1="Z.AI GLM"       arg2="glm"></expand>
+    <expand name="agent" arg1="Alibaba Qwen"   arg2="qwen"></expand>
 
     You *MUST* *NOT* output anything in this step.
 
