@@ -191,7 +191,7 @@ skills for improved quality. They can be conveniently managed via `ase
 setup mcp`.
 
 ```
-#   check list of pre-defined MCP servers
+#   check list of MCP servers known to ASE
 ase setup mcp list
 
 #   activate MCP servers in the agent tool
@@ -202,7 +202,7 @@ ase setup mcp deactivate [--tool claude|copilot] [<server>[,...]]
 ```
 
 Each MCP server reads its API key from an environment
-variable `ASE_MCP_KEY_<XXX>`, where `<XXX>` is the server id in
+variable `ASE_MCP_KEY_XXX`, where `XXX` is the server id in
 upper-case with dashes replaced by underscores (e.g. the server
 `openai-chatgpt` uses `ASE_MCP_KEY_OPENAI_CHATGPT`). These variables
 are also automatically sourced from `.env` files. A server whose
