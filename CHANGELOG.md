@@ -5,6 +5,8 @@ ChangeLog
 0.0.54 (2026-05-26)
 -------------------
 
+- CLEANUP: remove obsolete "ase-code-lint:xxx" commands
+
 0.0.53 (2026-05-26)
 -------------------
 
