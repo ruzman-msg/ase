@@ -59,7 +59,7 @@ explicitly requested by this procedure via outputs based on a <template/>!
             ⧉ **ASE**: ◉ task: **<id/>**, ▶ status: **<text/>**
             </template>
 
-        -   If <text/> starts NOT with `ERROR:`:
+        -   If <text/> starts NOT with `ERROR:` and NOT with `WARNING:`:
             Only output the following <template/>:
 
             <template>

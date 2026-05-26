@@ -60,7 +60,7 @@ explicitly requested by this procedure via outputs based on a <template/>!
             ⧉ **ASE**: ◉ task: **<id/>**, ▶ status: **<text/>**
             </template>
 
-        -   If <text/> starts NOT with `ERROR:`:
+        -   If <text/> starts NOT with `ERROR:` and NOT with `WARNING:`:
             Set <content><text/></content> (set content to text).
             Calculate the number of words <words/> of <content/>.
             Only output the following <template/>:
