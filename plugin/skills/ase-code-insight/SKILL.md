@@ -5,7 +5,7 @@ description: >
     Give insights into the source code.
 user-invocable: true
 disable-model-invocation: false
-effort: low
+effort: medium
 allowed-tools:
     - "Bash(git)"
     - "Bash(sort)"
