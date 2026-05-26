@@ -47,7 +47,7 @@ tools:
     ERROR: LLM `<llm/>` requires MCP server `<server/>`, but it is (currently) not available!
     </template>
 
-4.  Now call the MCP tool `query(query: <query/>)` from the MCP server
+4.  Now call the MCP tool `query(prompt: <query/>)` from the MCP server
     <server/> and then return its result `text` *verbatim* and
     *without any modifications*. Especially, do *NOT* add or remove
     any text to the MCP server response on your own and do not
