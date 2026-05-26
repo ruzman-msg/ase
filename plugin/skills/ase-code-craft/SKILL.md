@@ -71,7 +71,7 @@ permitted way to persist artifacts is via `ase_task_save(...)`.
         </if>
 
     2.  If <feature/> has the format `<id/>: <text/>` where <id/> matches
-        the regexp `^[a-zA-Z][a-zA-Z0-9_-]+$`, then set
+        the regexp `^[a-zA-Z][a-zA-Z0-9_-]*$`, then set
         <feature><text/></feature> and <ase-task-id><id/></ase-task-id>
         and call the `ase_task_id(id: <ase-task-id/>, session:
         <ase-session-id/>)` tool from the `ase` MCP server to
