@@ -171,10 +171,6 @@ export default class HookCommand {
         const hasSession = this.isValidSessionId(sessionId)
         const cfg = new Config("config", configSchema, this.log,
             hasSession ? parseScope(`session:${sessionId}`) : parseScope(undefined))
-        cfg.lock(() => {
-            cfg.read()
-        })
-
         /*  determine task id (only persist when scoped to a real session)  */
         const taskId = process.env.ASE_TASK_ID ?? "default"
         if (hasSession)
@@ -182,6 +178,10 @@ export default class HookCommand {
                 cfg.read()
                 cfg.set("agent.task", taskId)
                 cfg.write()
+            })
+        else
+            cfg.lock(() => {
+                cfg.read()
             })
 
         /*  initialize agent activity status  */
