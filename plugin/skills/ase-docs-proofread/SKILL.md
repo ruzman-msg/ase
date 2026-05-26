@@ -6,7 +6,7 @@ description: >
     Use when the user wants to "proofread" or "spellcheck" a document.
 user-invocable: true
 disable-model-invocation: false
-effort: medium
+effort: high
 ---
 
 @${CLAUDE_SKILL_DIR}/../../meta/ase-control.md
