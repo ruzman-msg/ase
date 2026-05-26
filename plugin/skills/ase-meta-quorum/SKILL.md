@@ -88,7 +88,7 @@ by querying *multiple* AIs for an *optimal consensus*.
 3.  <step id="STEP 3: Summarize Responses">
 
     Agents which returned a response with an `ERROR:` prefix are
-    silently skipped and are treatd as not available.
+    silently skipped and are treated as not available.
 
     Summarize all responses, of both yourself and all available agents
     with just 1 to 7 corresponding bullet points and with short

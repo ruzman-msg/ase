@@ -79,7 +79,7 @@ Your objective is to *search* the *Internet*/*Web* for the following query:
     calls above into a single response and output it without giving any
     further explanations.
 
-    For the consolidation, do *NOT* remove any orginal information,
+    For the consolidation, do *NOT* remove any original information,
     just *MERGE* all overlapping information.
 
     </step>
