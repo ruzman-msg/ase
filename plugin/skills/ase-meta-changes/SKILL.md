@@ -8,7 +8,7 @@ disable-model-invocation: false
 effort: medium
 allowed-tools:
     - "Bash(git log *)"
-    - "Bash(git status *)"
+    - "Bash(git diff *)"
     - "Bash(git show *)"
     - "Write"
     - "Edit"
@@ -24,78 +24,149 @@ Update ChangeLog Entries
 Update ChangeLog Entries
 </skill>
 
+<role>
 Your role is an experienced, *expert-level software developer*,
 specialized in *Git version control*.
+</role>
 
 <objective>
-Help to complete, consolidate and sort *ChangeLog* entries,
-based on underlying *Git* commit messages.
+Help to complete, consolidate and sort *ChangeLog* entries of the most
+recent *ChangeLog* section, based on underlying *Git* commits and staged
+changes.
 </objective>
 
-For this, understand that ChangeLog entries are
-always formatted `<prefix/>: <summary/>` where
-the <prefix/> is one of the following tags
-and their usual related changes...
+Format
+------
 
-    -   `FEATURE`: new functionality or configuration
-    -   `IMPROVEMENT`: improved functionality or configuration
-    -   `BUGFIX`: corrected functionality or configuration
-    -   `UPDATE`: updated functionality or configuration
-    -   `CLEANUP`: cleaned up functionality or configuration
-    -   `REFACTOR`: refactored functionality or configuration
+The *ChangeLog* file is a Markdown formatted file named `CHANGELOG.md`,
+and contains sections with headers in the style `N.M.K (YYYY-MM-DD)`.
 
-...and <summary/> is not longer than about 60-80 characters.
-The ChangeLog entries for a single product release version
-are also grouped and sorted according to the above <prefix/>es.
+Each *ChangeLog* entry is always formatted as `<prefix/>: <summary/>`
+where the <prefix/> is one of the following tags and their usual related
+changes:
+
+    -   `FEATURE`:     new        functionality or configuration
+    -   `IMPROVEMENT`: improved   functionality or configuration
+    -   `BUGFIX`:      corrected  functionality or configuration
+    -   `UPDATE`:      updated    functionality or configuration
+    -   `CLEANUP`:     cleaned up functionality or configuration
+    -   `REFACTOR`:    refactored functionality or configuration
+
+The <summary/> is not longer than about 60-80 characters. The
+*ChangeLog* entries for a single product release version are also always
+grouped and sorted according to the above <prefix/> list.
+
+Processing
+----------
 
 <flow>
 
-1. <step id="STEP 1: Locate and read existing ChangeLog entries">
-   The *ChangeLog* file `CHANGELOG.md` contains sections
-   with headers in the style `N.M.K (YYYY-MM-DD)`.
-   The `CHANGELOG.md` file is located in the *current* directory
-   or one of the *parent* directories.
-   </step>
+1.  <step id="STEP 1: Locate and read ChangeLog entries">
 
-2. <step id="STEP 2: Read corresponding Git commit log messages">
-   *Ignore* the current Git *index* and Git *stash* and use the Git *commits* only.
-   For finding the corresponding Git commits, use the `N.M.K`
-   from the *second* header in the *ChangeLog* file as
-   the corresponding Git tag and then check all Git commits
-   between `HEAD` and this tag.
-   </step>
+    The *ChangeLog* file `CHANGELOG.md` is located in the *current*
+    directory or one of the *parent* directories of the current project.
+    Locate and read this file. Store its relative path in <filename/>.
 
-3. <step id="STEP 3: Complete ChangeLog entries">
-   Without immediately modifying the `CHANGELOG.md` file,
-   *complete* the entries in the first (most recent) section only,
-   by adding the corresponding (most recent) Git commits only.
-   For each Git commit, reduce the Git commit messages to a single
-   short sentence.
-   </step>
+    You *MUST* *NOT* output anything, except the result with the
+    following <template/>:
 
-4. <step id="STEP 4: Consolidate ChangeLog entries">
-   Without immediately modifying the `CHANGELOG.md` file,
-   *consolidate* the entries in the first (most recent) section only,
-   by summarizing and merging closely related entries.
-   Perform the entry consolidation per prefix group only.
-   If a changelog <summary/> is too short or is not comprehensible enough
-   because of too little context, add some context, especially references
-   to the class/module/package, etc.
-   </step>
+    <template>
+    &#x1F535; **CHANGELOG FILE:** `<filename/>`
+    </template>
 
-5. <step id="STEP 5: Sort ChangeLog entries">
-   Without immediately modifying the `CHANGELOG.md` file,
-   *sort* the entries in the first (most recent) section only.
-   Instead of the chronological commit order, group the entries
-   by the prefixes.
-   </step>
+    </step>
 
-6. <step id="STEP 6: Write modified ChangeLog entries">
-   Finally, *update* the `CHANGELOG.md` file with the
-   completed, consolidated and sorted *ChangeLog* entries.
-   Also, update the date `YYYY-MM-DD` in the `N.M.K (YYYY-MM-DD)`
-   headline of the *first* (most recent) section.
-   </step>
+2.  <step id="STEP 2: Determine artifact changes">
+
+    You *MUST* *NOT* output anything, except introduce the current
+    operation with an output based on the following <template/>:
+
+    <template>
+    &#x1F535; **DETERMINE ARTIFACT CHANGES:**
+    </template>
+
+    To update to entries of the most recent *ChangeLog* section, consult
+    the Git *commits* plus the currenly already staged changes in the Git
+    *index*, but *ignore* the Git *stash* and and still unstaged changes.
+
+    For finding the corresponding Git *commits*, use the `N.M.K` from the
+    *second* level-2 header in the *ChangeLog* file as the corresponding
+    Git tag and then check all Git commits between `HEAD` and this tag
+    with the command `git log N.M.K..HEAD --numstat --pretty=format:'%h:
+    %s'`.
+
+    For finding the corresponding staged Git *changes* in the Git
+    *index*, use the command `git diff --cached --numstat`, but silently
+    skip already existing changes to the `CHANGELOG.md` file itself. If
+    still no corresponding *ChangeLog* entry exists for these staged
+    Git *changes*, derive a meaningful one from a `git diff --cached`
+    command.
+
+    </step>
+
+3.  <step id="STEP 3: Complete ChangeLog entries">
+
+    You *MUST* *NOT* output anything, except introduce the current
+    operation with an output based on the following <template/>:
+
+    <template>
+    &#x1F535; **COMPLETE ENTRIES:**
+    </template>
+
+    Without immediately modifying the `CHANGELOG.md` file, *complete*
+    the entries in the first (most recent) section only, by adding the
+    corresponding (most recent) Git *commits* and *staged* changes only.
+
+    For each Git commit, reduce the Git commit messages to a single
+    short <summary/> sentence, not longer than 60-80 characters.
+
+    If a <summary/> is too short or especially is not comprehensible
+    enough because of too little context information, add some essential
+    context, especially references to the class/module/package, etc.
+    For this, if necessary, read the related source files with a
+    corresponding `git show` command to get a better understanding of
+    this context.
+
+    </step>
+
+4.  <step id="STEP 4: Consolidate and sort ChangeLog entries">
+
+    You *MUST* *NOT* output anything, except introduce the current
+    operation with an output based on the following <template/>:
+
+    <template>
+    &#x1F535; **CONSOLIDATE ENTRIES:**
+    </template>
+
+    Without immediately modifying the `CHANGELOG.md` file, *consolidate*
+    the entries in the first (most recent) section only, by summarizing
+    and merging closely related entries. Perform the entry consolidation
+    per <prefix/> group only.
+
+    Without immediately modifying the `CHANGELOG.md` file, *sort* the
+    entries in the first (most recent) section only. Instead of the
+    chronological commit order, group the entries by the <prefix/>es.
+
+    </step>
+
+5.  <step id="STEP 5: Write modified ChangeLog entries">
+
+    You *MUST* *NOT* output anything, except introduce the current
+    operation with an output based on the following <template/>:
+
+    <template>
+    &#x1F7E0; **UPDATING CHANGELOG:**
+    </template>
+
+    Finally, *update* the `CHANGELOG.md` file with the completed,
+    consolidated and sorted *ChangeLog* entries. Also, update the date
+    `YYYY-MM-DD` in the `N.M.K (YYYY-MM-DD)` header of the *first* (most
+    recent) section.
+
+    You *MUST* *NOT* output any further summary or give any further
+    explanations.
+
+    </step>
 
 </flow>
 
