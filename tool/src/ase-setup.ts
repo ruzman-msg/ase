@@ -740,7 +740,7 @@ export default class SetupCommand {
 
         /*  default for --tool derived from ASE_TOOL environment variable  */
         const envTool  = process.env.ASE_TOOL ?? ""
-        const toolDflt = envTool !== "" ? envTool : "claude"
+        const toolDflt = envTool !== "" ? this.parseTool(envTool) : "claude"
 
         /*  register CLI top-level command "ase setup"  */
         const setupCmd = program
