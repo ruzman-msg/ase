@@ -415,6 +415,8 @@ export class TaskMCP {
                 }
             }
         })
+
+        /*  task delete  */
         mcp.registerTool("ase_task_delete", {
             title: "ASE task delete",
             description:
@@ -428,8 +430,8 @@ export class TaskMCP {
             try {
                 const removed = Task.delete(args.id)
                 const msg     = removed ?
-                    "OK: removed task" :
-                    "WARNING: task not found"
+                    `task_delete: OK: removed task "${args.id}"` :
+                    `task_delete: WARNING: no task "${args.id}" to remove`
                 return {
                     content: [ { type: "text", text: msg } ]
                 }
@@ -461,7 +463,7 @@ export class TaskMCP {
                 const renamed = Task.rename(args.old, args.new)
                 const msg     = renamed ?
                     `task_rename: OK: renamed task "${args.old}" to "${args.new}"` :
-                    "WARNING: task not found"
+                    `task_rename: WARNING: no task "${args.old}" to rename`
                 return {
                     content: [ { type: "text", text: msg } ]
                 }
