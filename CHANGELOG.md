@@ -7,6 +7,7 @@ ChangeLog
 
 - IMPROVEMENT: support also single-character task ids in `ase-code-craft` and `ase-code-resolve` skills
 - IMPROVEMENT: add missing entries to `ase-meta-quorum` skill
+- IMPROVEMENT: avoid reading config twice in `ase-hook`
 - BUGFIX: honor also `WARNING:` results in `ase-task-delete` and `ase-task-view` skills
 - CLEANUP: simplify code by eliminating redundancies in `ase-setup`
 - CLEANUP: clean up code in `ase-config` and `ase-diagram`
