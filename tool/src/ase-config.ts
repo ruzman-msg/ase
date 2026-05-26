@@ -444,9 +444,9 @@ export class Config {
             return this.docs[this.target].doc.contents
         const segs = this.resolveKey(key).split(".")
         for (let i = this.docs.length - 1; i >= 0; i--) {
-            const v = this.docs[i].doc.getIn(segs)
-            if (v !== undefined)
-                return v
+            const node = this.docs[i].doc.getIn(segs)
+            if (node !== undefined)
+                return node
         }
         return undefined
     }
@@ -473,9 +473,9 @@ export class Config {
         for (const k of keys) {
             const segs = k.split(".")
             for (let i = this.docs.length - 1; i >= 0; i--) {
-                const v = this.docs[i].doc.getIn(segs)
-                if (v !== undefined) {
-                    result.push({ key: k, value: v, scope: this.docs[i].scope })
+                const node = this.docs[i].doc.getIn(segs)
+                if (node !== undefined) {
+                    result.push({ key: k, value: node, scope: this.docs[i].scope })
                     break
                 }
             }
@@ -606,8 +606,8 @@ export default class ConfigCommand {
                     style: { head: [ "blue" ] }
                 })
                 for (const e of cfg.entries()) {
-                    const v = isScalar(e.value) ? e.value.value : e.value
-                    table.push([ e.key, String(v), Config.scopeLabel(e.scope) ])
+                    const val = isScalar(e.value) ? e.value.value : e.value
+                    table.push([ e.key, String(val), Config.scopeLabel(e.scope) ])
                 }
                 process.stdout.write(`${table.toString()}\n`)
             })
